@@ -4,6 +4,98 @@ h1:focus {
     outline: none;
 }
 
+#app {
+    min-height: 100vh;
+}
+
+.app-loading {
+    display: grid;
+    min-height: 100vh;
+    place-items: center;
+    align-content: center;
+    gap: 1rem;
+    color: #eaf5fc;
+    background: radial-gradient(circle at 70% 20%, rgba(78, 142, 162, .24), transparent 28rem), #00152f;
+    font-family: 'Inter', sans-serif;
+}
+
+.app-loading-mark {
+    color: #f2f7fc;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    letter-spacing: -.08em;
+}
+
+.app-loading-mark span {
+    color: #61b6ee;
+}
+
+.app-loading p {
+    margin: 0;
+    color: rgba(234, 245, 252, .72);
+    font-size: .75rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.app-loading-indicator {
+    display: flex;
+    gap: .4rem;
+}
+
+.app-loading-indicator span {
+    width: .45rem;
+    height: .45rem;
+    border-radius: 50%;
+    background: #61b6ee;
+    animation: app-loading-pulse 1.2s infinite ease-in-out;
+}
+
+.app-loading-indicator span:nth-child(2) { animation-delay: .15s; }
+.app-loading-indicator span:nth-child(3) { animation-delay: .3s; }
+
+@keyframes app-loading-pulse {
+    0%, 80%, 100% { opacity: .35; transform: scale(.75); }
+    40% { opacity: 1; transform: scale(1); }
+}
+
+#blazor-error-ui {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 1000;
+    display: none;
+    max-width: min(24rem, calc(100vw - 2.5rem));
+    padding: 1rem 3rem 1rem 1.1rem;
+    color: #fff;
+    background: #7f1d1d;
+    border: 1px solid rgba(255, 255, 255, .18);
+    border-radius: .75rem;
+    box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, .22);
+}
+
+.blazor-error-content {
+    display: grid;
+    gap: .3rem;
+    font-size: .82rem;
+}
+
+.blazor-error-content span { color: rgba(255, 255, 255, .78); }
+.blazor-error-content .reload { color: #fff; font-weight: 700; }
+
+#blazor-error-ui .dismiss {
+    position: absolute;
+    top: .55rem;
+    right: .65rem;
+    padding: .15rem .35rem;
+    color: #fff;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
 }

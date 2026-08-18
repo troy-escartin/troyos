@@ -20,7 +20,7 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 10.0.x
 
       - name: Restore dependencies
         shell: bash
@@ -48,3 +48,15 @@ jobs:
           else
             echo 'No .NET solution or project found; skipping tests.'
           fi
+
+      - name: Publish Blazor WebAssembly client
+        if: github.event_name == 'push'
+        run: dotnet publish TroyOS.UI/TroyOS.UI.Client/TroyOS.UI.Client.csproj --configuration Release --no-restore --output ./publish
+
+      - name: Deploy to Cloudflare Pages
+        if: github.event_name == 'push'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: pages deploy ./publish/wwwroot --project-name=${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME }}

@@ -13,6 +13,54 @@
     transition: background .25s ease, color .25s ease;
 }
 
+/* A restrained first-load reveal keeps the page feeling responsive while giving
+   the main content a little room to arrive. */
+.portfolio-shell > header,
+.hero-copy,
+.hero-visual,
+.content-section,
+.site-footer {
+    animation: home-reveal .8s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.portfolio-shell > header { animation-delay: .05s; }
+.hero-copy { animation-delay: .12s; }
+.hero-visual { animation-delay: .2s; }
+.content-section { animation-delay: .38s; }
+.site-footer { animation-delay: .5s; }
+
+.capability-card {
+    animation: home-card-reveal .75s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.capability-cards > .col:nth-child(1) .capability-card { animation-delay: .3s; }
+.capability-cards > .col:nth-child(2) .capability-card { animation-delay: .38s; }
+.capability-cards > .col:nth-child(3) .capability-card { animation-delay: .46s; }
+
+@keyframes home-reveal {
+    from {
+        opacity: 0;
+        transform: translateY(1.25rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes home-card-reveal {
+    from {
+        opacity: 0;
+        transform: translateY(1rem) scale(.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
 .portfolio-shell.theme-dark {
     --base: #071a2a;
     --navy: #eaf5fc;
@@ -231,4 +279,15 @@
     .footer-bottom blockquote { order: initial; grid-column: auto; text-align: left; }
     .footer-legal { justify-content: flex-start; }
     .back-to-top { margin-left: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .portfolio-shell > header,
+    .hero-copy,
+    .hero-visual,
+    .content-section,
+    .site-footer,
+    .capability-card {
+        animation: none;
+    }
 }

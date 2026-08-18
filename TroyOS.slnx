@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".github/workflows/dotnet.yml" />
+  </Folder>
   <Project Path="TroyOS.UI/TroyOS.UI.Client/TroyOS.UI.Client.csproj" Id="cff999e5-845d-47c4-b333-c51fb2474e52" />
   <Project Path="TroyOS.UI/TroyOS.UI/TroyOS.UI.csproj" Id="c1ba9302-b170-4768-86f2-34ffa8e2e054" />
 </Solution>
