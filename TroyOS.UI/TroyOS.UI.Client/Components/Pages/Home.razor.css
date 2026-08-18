@@ -244,6 +244,9 @@
 
 @media (min-width: 992px) and (max-width: 1399.98px) {
     .hero-section { height: 650px; }
+    .hero-photo {
+        transform: translateY(-4rem) scale(1);
+    }
     .capability-cards { width: 52%; max-width: none; margin: -18rem 0 0 48%; }
     .capability-cards > .col { flex: 1 1 0; min-width: 0; }
     .capability-card { gap: .65rem; padding: .8rem; }
