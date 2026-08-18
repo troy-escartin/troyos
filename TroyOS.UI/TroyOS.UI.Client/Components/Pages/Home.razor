@@ -101,14 +101,9 @@
                 }
             </div>
 
-            <h2 class="section-heading"><i class="bi bi-star"></i> LEADERSHIP PRINCIPLES</h2>
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-5 g-3">
-                @foreach (var item in principles)
-                {
-                    <div class="col"><article class="glass-card principle-tile"><span class="principle-badge">@item.Number</span><span>@item.Text</span></article></div>
-                }
-            </div>
         </section>
+
+        <Feedback />
 
         <footer class="site-footer" aria-label="Site footer">
             <div class="footer-content">
