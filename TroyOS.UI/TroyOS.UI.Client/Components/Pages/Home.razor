@@ -74,16 +74,29 @@
         <section id="now" class="content-section container-fluid px-4 px-lg-5" aria-labelledby="focus-heading">
             <h2 class="section-heading" id="focus-heading"><i class="bi bi-crosshair"></i> CURRENT FOCUS</h2>
             <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3 mb-4 focus-grid">
-                @foreach (var item in focusItems)
+                @for (var i = 0; i < focusItems.Length; i++)
                 {
+                    var item = focusItems[i];
+                    var index = i;
                     <div class="col">
-                        <article class="glass-card focus-tile">
-                            <span class="num-badge">@item.Number</span>
-                            <div class="focus-content">
-                                <h3>@item.Text</h3>
-                                <p class="focus-details">@item.Details</p>
+                        <div class="focus-flip @(flippedCards.Contains(index) ? "is-flipped" : string.Empty)"
+                             tabindex="0" role="button" aria-pressed="@(flippedCards.Contains(index))"
+                             aria-label="@($"{item.Text}. Tap to flip card.")"
+                             @onclick="() => ToggleFlip(index)" @onkeydown="(e) => OnFlipKeyDown(e, index)">
+                            <div class="focus-flip-inner">
+                                <article class="glass-card focus-face focus-face-front">
+                                    <span class="num-badge">@item.Number</span>
+                                    <div class="focus-content">
+                                        <h3>@item.Text</h3>
+                                    </div>
+                                </article>
+                                <article class="glass-card focus-face focus-face-back">
+                                    <div class="focus-content">
+                                    <p class="focus-details">@item.Details</p>
+                                    </div>
+                                </article>
                             </div>
-                        </article>
+                        </div>
                     </div>
                 }
             </div>
@@ -149,8 +162,25 @@
 
 @code {
     private bool isDarkMode;
+    private readonly HashSet<int> flippedCards = [];
 
     private void ToggleTheme() => isDarkMode = !isDarkMode;
+
+    private void ToggleFlip(int index)
+    {
+        if (!flippedCards.Add(index))
+        {
+            flippedCards.Remove(index);
+        }
+    }
+
+    private void OnFlipKeyDown(Microsoft.AspNetCore.Components.Web.KeyboardEventArgs e, int index)
+    {
+        if (e.Key is "Enter" or " ")
+        {
+            ToggleFlip(index);
+        }
+    }
 
     private readonly (string Icon, string Title, string[] Items)[] capabilities =
     [
