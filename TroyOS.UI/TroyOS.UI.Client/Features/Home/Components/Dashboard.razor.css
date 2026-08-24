@@ -200,51 +200,6 @@
 .num-badge, .principle-badge { display: inline-grid; flex: 0 0 auto; place-items: center; color: white; background: var(--navy); font-weight: 800; }
 .num-badge { width: 3rem; height: 3rem; border-radius: .4rem; font-size: .85rem }
 
-/* Flip card */
-.focus-flip { position: relative; width: 100%; height: 100%; min-height: 7rem; perspective: 1700px; border-radius: 1rem; cursor: pointer; }
-.focus-flip:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(78,142,162,.5); border-radius: 1rem; }
-.focus-flip-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    min-height: 8.4rem;
-    transform-style: preserve-3d;
-    transition: transform .55s cubic-bezier(.4, 0, .2, 1);
-}
-.focus-flip:hover .focus-flip-inner,
-.focus-flip.is-flipped .focus-flip-inner { transform: rotateX(180deg); }
-.focus-flip:hover,
-.focus-flip.is-flipped { transform: translateY(-3px); }
-.focus-face {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    padding: 1.6rem 1.35rem;
-    text-align: center;
-    color: var(--navy);
-    font-size: .72rem;
-    font-weight: 650;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    border-radius: 1rem;
-    box-shadow: 0 8px 30px rgba(0,29,57,.10);
-    transition: box-shadow .25s ease;
-}
-.focus-flip:hover .focus-face,
-.focus-flip.is-flipped .focus-face { box-shadow: 0 16px 34px rgba(0,29,57,.18); }
-.focus-face-back { transform: rotateX(180deg); }
-@media (prefers-reduced-motion: reduce) {
-    .focus-flip-inner { transition: none; }
-    .focus-flip:hover .focus-flip-inner,
-    .focus-flip.is-flipped .focus-flip-inner { transform: none; }
-    .focus-face-back { display: none; }
-    .focus-flip:hover,
-    .focus-flip.is-flipped { transform: none; }
-}
 .principle-tile { min-height: 6rem; align-items: center; }
 .principle-badge { width: 2.45rem; height: 2.45rem; border-radius: 50%; font-size: .85rem; box-shadow: inset 0 -3px 8px rgba(123,189,232,.3); }
 @media (max-width: 991.98px) {
