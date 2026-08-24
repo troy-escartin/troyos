@@ -30,6 +30,12 @@
 .brand-mark span { color: var(--accent); }
 .nav-link { color: var(--navy); font-size: .82rem; font-weight: 600; }
 .nav-link:hover, .nav-link:focus { color: var(--accent); }
+.nav-link.active {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: .35rem;
+}
 .theme-toggle { border: 0; background: transparent; font-size: 1.15rem; }
 .nav-divider { height: 1.25rem; border-left: 1px solid rgba(0, 29, 57, .2); }
 .navbar-toggler { display: block; border: 0; color: var(--navy); font-size: 1.5rem; }

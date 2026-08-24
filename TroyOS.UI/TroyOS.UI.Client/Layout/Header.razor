@@ -8,9 +8,9 @@
             </button>
             <div class="collapse navbar-collapse" id="portfolioNav">
                 <div class="navbar-nav ms-auto align-items-lg-center gap-lg-4">
-                    <a class="nav-link" href="#dashboard">Dashboard</a>
-                    <a class="nav-link" href="#journey">Journey</a>
-                    <a class="nav-link" href="#now">Now</a>
+                    <a class="nav-link" href="/#dashboard">Dashboard</a>
+                    <NavLink class="nav-link" href="/journey" Match="NavLinkMatch.All">Journey</NavLink>
+                    <a class="nav-link" href="/#now">Now</a>
                     <span class="nav-divider d-none d-lg-block" aria-hidden="true"></span>
                     <button class="theme-toggle nav-link" type="button" @onclick="OnToggleTheme" aria-label="Toggle color theme">
                         <i class="bi @(IsDarkMode ? "bi-sun" : "bi-moon-stars")"></i>

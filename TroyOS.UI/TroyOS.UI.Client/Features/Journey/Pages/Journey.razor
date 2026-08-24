@@ -1,0 +1,257 @@
+@page "/journey"
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+
+<PageTitle>Journey | Troy.OS</PageTitle>
+
+<main class="journey-page">
+
+    @* ===================== HERO ===================== *@
+    <section class="journey-hero container-fluid px-4 px-lg-5" aria-labelledby="journey-hero-title">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 hero-copy">
+                <p class="eyebrow mb-2">MY JOURNEY</p>
+                <h1 id="journey-hero-title" class="hero-title mb-3">
+                    The path that<br />shaped me<span class="accent-dot">.</span>
+                </h1>
+                <p class="hero-lead mb-4">
+                    A journey of continuous learning, building with purpose, and leading with impact.
+                </p>
+                <div class="d-flex flex-wrap gap-3 stat-chip-row">
+                    @foreach (var stat in stats)
+                    {
+                        <div class="stat-chip d-flex align-items-center gap-2">
+                            <span class="stat-icon"><i class="bi @stat.Icon" aria-hidden="true"></i></span>
+                            <span class="stat-copy">
+                                <strong>@stat.Value</strong>
+                                <span>@stat.Label</span>
+                            </span>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-lg-6 hero-visual">
+                <div class="dot-grid dot-grid--hero" aria-hidden="true"></div>
+                <div class="hero-photo-wrap">
+                    <img class="hero-photo" src="https://images.unsplash.com/photo-1465146633011-14f8e0781093?auto=format&fit=crop&w=900&q=80"
+                         alt="Silhouette of a person standing on a mountain summit at sunrise" />
+                    <blockquote class="quote-card hero-quote-card">
+                        <i class="bi bi-quote quote-glyph" aria-hidden="true"></i>
+                        <p class="mb-2">
+                            The best code I've written isn't in an IDE — it's in the teams I've built
+                            and the leaders I've helped grow.
+                        </p>
+                        <span class="quote-divider" aria-hidden="true"></span>
+                        <cite>— Troy</cite>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-next-control">
+            <button type="button" class="hero-next-button"
+                    aria-label="Go to the first Journey stage: Learner"
+                    @onclick="() => ScrollToStage(stages[0].Level)">
+                <i class="bi bi-chevron-down" aria-hidden="true"></i>
+            </button>
+            <span class="hero-next-label">Begin journey</span>
+        </div>
+    </section>
+
+    @* ===================== TIMELINE ===================== *@
+    <div class="timeline-wrap">
+        <div class="spine" aria-hidden="true"></div>
+
+        @for (var i = 0; i < stages.Count; i++)
+        {
+            var index = i;
+            var stage = stages[index];
+            var isEven = index % 2 == 1;
+            var stageBg = index % 2 == 0 ? "bg-a" : "bg-b";
+            var next = index < stages.Count - 1 ? stages[index + 1] : null;
+
+            if (!stage.IsFinale)
+            {
+                <section id="stage-@stage.Level" class="stage @stageBg" aria-labelledby="stage-@(stage.Level)-title">
+                    <div class="container-fluid px-4 px-lg-5">
+                        <div class="row align-items-center stage-row @(isEven ? "flex-row-reverse" : string.Empty)">
+                            <div class="col-lg-5 stage-content order-1">
+                                <div class="content-card">
+                                    <div class="stage-heading">
+                                        <span class="icon-tile"><i class="bi @stage.Icon" aria-hidden="true"></i></span>
+                                        <h2 id="stage-@(stage.Level)-title" class="stage-title">@stage.Title</h2>
+                                    </div>
+                                    <p class="stage-subtitle">@stage.Subtitle</p>
+                                    <ul class="milestone-list list-unstyled">
+                                        @foreach (var milestone in stage.Milestones)
+                                        {
+                                            <li><span class="bullet-dot" aria-hidden="true"></span>@milestone</li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 spine-col order-2 d-none d-lg-flex">
+                                <span class="level-badge" aria-hidden="true">@stage.Level.ToString("00")</span>
+                            </div>
+
+                            <div class="col-lg-5 stage-quote-col order-3">
+                                <blockquote class="quote-card stage-quote">
+                                    <i class="bi bi-quote quote-glyph" aria-hidden="true"></i>
+                                    <p class="mb-2">@stage.Quote</p>
+                                    <span class="quote-divider" aria-hidden="true"></span>
+                                    <cite>— Troy</cite>
+                                    <span class="dot-grid dot-grid--card" aria-hidden="true"></span>
+                                </blockquote>
+                            </div>
+                        </div>
+
+                        @if (next is not null)
+                        {
+                            <div class="next-row">
+                                <div class="next-anchor">
+                                    <button type="button" class="next-button"
+                                            aria-label="Go to next stage: @next.Title"
+                                            @onclick="() => ScrollToStage(next.Level)">
+                                        <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                                    </button>
+                                    <span class="next-label">
+                                        <strong>Next: @next.Title</strong>
+                                        <span>Scroll down to continue</span>
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </section>
+            }
+            else
+            {
+                <section id="stage-@stage.Level" class="stage stage--finale" aria-labelledby="stage-@(stage.Level)-title">
+                    <div class="finale-rings" aria-hidden="true"></div>
+                    <div class="container-fluid px-4 px-lg-5">
+                        <div class="row align-items-center stage-row">
+                            <div class="col-lg-5 stage-content order-1">
+                                <div class="content-card content-card--translucent">
+                                    <div class="stage-heading">
+                                        <span class="icon-tile icon-tile--dark"><i class="bi bi-lightbulb" aria-hidden="true"></i></span>
+                                        <h2 id="stage-@(stage.Level)-title" class="stage-title stage-title--dark">@stage.Title</h2>
+                                    </div>
+                                    <p class="stage-subtitle stage-subtitle--dark">@stage.Subtitle</p>
+                                    <p class="finale-copy">@stage.Aspiration</p>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 spine-col order-2 d-none d-lg-flex">
+                                <span class="level-badge" aria-hidden="true">@stage.Level.ToString("00")</span>
+                            </div>
+
+                            <div class="col-lg-5 stage-quote-col order-3">
+                                <blockquote class="quote-card stage-quote quote-card--translucent">
+                                    <i class="bi bi-quote quote-glyph" aria-hidden="true"></i>
+                                    <p class="mb-2">@stage.Quote</p>
+                                    <span class="quote-divider" aria-hidden="true"></span>
+                                    <cite>— Troy</cite>
+                                </blockquote>
+                            </div>
+                        </div>
+
+                        <div class="next-row">
+                            <div class="next-anchor">
+                                <button type="button" class="next-button next-button--dark"
+                                        aria-label="Back to start"
+                                        @onclick="() => ScrollToStage(stages[0].Level)">
+                                    <i class="bi bi-chevron-up" aria-hidden="true"></i>
+                                </button>
+                                <span class="next-label next-label--dark">
+                                    <strong>Back to start</strong>
+                                    <span>Scroll up to revisit</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            }
+        }
+    </div>
+
+    @* ===================== FOOTER STRIP ===================== *@
+    <section class="journey-footer-strip text-center">
+        <i class="bi bi-compass" aria-hidden="true"></i>
+        <p class="mb-0"><strong>The journey continues.</strong></p>
+        <p class="mb-0 text-muted">Every day is another opportunity to learn, teach, and create impact.</p>
+    </section>
+</main>
+
+@code {
+    private record StatChip(string Icon, string Value, string Label);
+
+    private record JourneyStage(
+        int Level,
+        string Icon,
+        string Title,
+        string Subtitle,
+        string[] Milestones,
+        string Quote,
+        bool IsFinale,
+        string Aspiration = "");
+
+    private readonly List<StatChip> stats =
+    [
+        new("bi-mortarboard", "15+", "Years of Learning"),
+        new("bi-flag", "40+", "Milestones"),
+        new("bi-infinity", "∞", "Lessons")
+    ];
+
+    private readonly List<JourneyStage> stages =
+    [
+        new(1, "bi-mortarboard", "Learner", "College, MBA, and technical apprenticeship years",
+            [
+                "2004–2010: Built a strong foundation through early roles in IT, systems integration, and consulting — learning how technology solves real business problems.",
+                "2006–2008: Delivered client-facing solutions for Prudential Life, gaining early exposure to enterprise and financial environments.",
+                "2008–2010: Grew into a professional software engineer, sharpening the craft that would anchor the rest of the journey.",
+                "Education: Completed an MBA at De La Salle University, Manila, pairing technical depth with business and leadership perspective."
+            ],
+            "Every problem taught me how technology serves the business.", false),
+
+        new(2, "bi-code-slash", "Contributor", "Hands-on delivery as Developer & Lead Developer",
+            [
+                "2010–2012: Delivered applications for U.S. legal-sector clients, turning business needs into working solutions.",
+                "2012–2016: Stepped up as Lead Developer — mentoring engineers and guiding key delivery decisions.",
+                "2012–2016: Contributed to high-value, multi-million-dollar client engagements with measurable business impact.",
+                "2012–2016: Named Consultant of the Year for delivery excellence and technical leadership."
+            ],
+            "Delivery is where skill meets impact.", false),
+
+        new(3, "bi-people", "Leader", "Managing cross-functional teams",
+            [
+                "2016–2017: Moved into management, leading delivery while mentoring developers and raising team standards.",
+                "2017–2023: Directed multiple teams delivering critical enterprise applications with consistency and quality.",
+                "2017–2023: Introduced stronger ways of working that improved planning, coordination, and execution.",
+                "2017–2023: Delivered legal and finance solutions for global teams across regions and time zones."
+            ],
+            "Great standards outlast great individuals.", false),
+
+        new(4, "bi-bullseye", "Expert", "Senior Development Manager; strategy, governance, and AI enablement",
+            [
+                "2023–Present: Lead enterprise delivery end-to-end, owning quality and coordination across teams.",
+                "2023–Present: Scaled a team to 15–25 professionals to meet the demands of a major enterprise initiative.",
+                "2023–Present: Align business and product stakeholders on priorities and roadmap decisions.",
+                "2023–Present: Champion AI-assisted development to accelerate delivery and elevate team performance."
+            ],
+            "AI doesn't replace teams — it amplifies them.", false),
+
+        new(5, "bi-lightbulb", "Visionary", "Future — growing leaders and driving lasting impact",
+            [],
+            "Measured not by what I built, but by the leaders I helped rise.", true,
+            "To become a leader who builds leaders — igniting a movement where people, teams, and " +
+            "organizations achieve their fullest potential. I aspire to inspire growth beyond myself, " +
+            "champion innovation that creates lasting impact, and leave a legacy measured not by what I " +
+            "built, but by the leaders I helped rise.")
+    ];
+
+    private async Task ScrollToStage(int level)
+    {
+        await JS.InvokeVoidAsync("journeyScroll.scrollToId", $"stage-{level}");
+    }
+}
