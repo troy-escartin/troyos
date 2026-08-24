@@ -1,0 +1,98 @@
+@* Current Focus section: a row of 3D flip cards revealing focus-area detail on click. *@
+<section id="now" class="content-section container-fluid px-4 px-lg-5" aria-labelledby="focus-heading">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+        <h2 class="section-heading mb-0" id="focus-heading"><i class="bi bi-bullseye"></i> CURRENT FOCUS</h2>
+        <a href="#" class="explore-link">Explore all focus areas <i class="bi bi-arrow-right"></i></a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4 focus-grid">
+        @for (var i = 0; i < focusCards.Count; i++)
+        {
+            var index = i;
+            var card = focusCards[index];
+            var isFlipped = flippedCards.Contains(index);
+            <div class="col">
+                <button type="button" class="flip-card" aria-expanded="@(isFlipped ? "true" : "false")"
+                        aria-label="@($"{card.Title} - expand details")"
+                        @onclick="() => ToggleFlip(index)">
+                    <div class="flip-card-inner @(isFlipped ? "is-flipped" : string.Empty)">
+                        <div class="flip-card-front">
+                            <span class="num-badge">@card.Number</span>
+                            <div class="front-body">
+                                <span class="icon-tile"><i class="bi @card.Icon"></i></span>
+                                <h3>@card.Title</h3>
+                            </div>
+                            <span class="click-cue">Click to explore <i class="bi bi-hand-index"></i></span>
+                        </div>
+                        <div class="flip-card-back">
+                            <span class="flip-back-cue" aria-hidden="true"><i class="bi bi-arrow-counterclockwise"></i></span>
+                            <span class="back-label">What I am focusing on</span>
+                            <p class="back-teaser">@card.Teaser</p>
+                            <div class="key-areas">
+                                <span class="key-areas-title">Key areas</span>
+                                <div class="key-areas-pills">
+                                    @foreach (var area in card.KeyAreas)
+                                    {
+                                        <span class="key-pill"><i class="bi bi-check-circle"></i> @area</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </button>
+            </div>
+        }
+    </div>
+
+    <div class="row row-cols-2 row-cols-md-4 g-3 value-strip">
+        @foreach (var value in valueStrip)
+        {
+            <div class="col">
+                <div class="value-item">
+                    <span class="value-icon"><i class="bi @value.Icon"></i></span>
+                    <div class="value-copy">
+                        <strong>@value.Title</strong>
+                        <span>@value.Description</span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    private record FocusCard(string Number, string Icon, string Title, string Teaser, string[] KeyAreas);
+    private record ValueItem(string Icon, string Title, string Description);
+
+    private readonly HashSet<int> flippedCards = [];
+
+    private void ToggleFlip(int index)
+    {
+        if (!flippedCards.Add(index))
+        {
+            flippedCards.Remove(index);
+        }
+    }
+
+    private readonly List<FocusCard> focusCards =
+    [
+        new("01", "bi-cpu", "AI Assisted Engineering",
+            "Leveraging AI to accelerate development, reduce cognitive load, and ship better software.",
+            ["AI Tools & Workflows", "Automation & Copilot", "Prompt Engineering", "Quality & Testing"]),
+        new("02", "bi-graph-up-arrow", "Developer Productivity",
+            "Optimizing workflows, standards, and tooling to help teams focus on what matters most.",
+            ["DX Improvements", "Tooling & Automation", "Standards & Templates", "Flow & Focus"]),
+        new("03", "bi-shield-check", "Engineering Excellence",
+            "Building scalable, maintainable, and secure systems with craftsmanship and discipline.",
+            ["Architecture & Design", "Code Quality", "Security & Reliability", "Observability"])
+    ];
+
+    private readonly List<ValueItem> valueStrip =
+    [
+        new("bi-stars", "Deep insights", "Actionable strategies and real-world lessons."),
+        new("bi-bookmark-check", "Practical frameworks", "Reusable templates, checklists, and playbooks."),
+        new("bi-people", "Proven impact", "Techniques that drive team growth and business value."),
+        new("bi-shield-lock", "Always evolving", "Continuously learning and sharing what works.")
+    ];
+}
+

@@ -1,0 +1,44 @@
+.home-header {
+    animation: home-reveal .8s cubic-bezier(.22, 1, .36, 1) .05s both;
+}
+
+@keyframes home-reveal {
+    from {
+        opacity: 0;
+        transform: translateY(1.25rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.portfolio-nav {
+    position: relative;
+    z-index: 10;
+    min-height: 4.25rem;
+    background: rgba(247, 249, 252, .72);
+    border: 1px solid rgba(255, 255, 255, .65);
+    box-shadow: 0 4px 20px rgba(0, 29, 57, .08);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+:global(.theme-dark) .portfolio-nav { background: rgba(7, 26, 42, .78); }
+.brand-mark { color: var(--navy); font-size: 1.25rem; font-weight: 800; letter-spacing: -.04em; }
+.brand-mark span { color: var(--accent); }
+.nav-link { color: var(--navy); font-size: .82rem; font-weight: 600; }
+.nav-link:hover, .nav-link:focus { color: var(--accent); }
+.theme-toggle { border: 0; background: transparent; font-size: 1.15rem; }
+.nav-divider { height: 1.25rem; border-left: 1px solid rgba(0, 29, 57, .2); }
+.navbar-toggler { display: block; border: 0; color: var(--navy); font-size: 1.5rem; }
+
+@media (max-width: 575.98px) {
+    .portfolio-nav { min-height: 3.75rem; }
+    .portfolio-nav .container-fluid { padding-left: 1rem; padding-right: 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-header { animation: none; }
+}

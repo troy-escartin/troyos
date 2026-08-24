@@ -1,0 +1,15 @@
+@inherits LayoutComponentBase
+
+<div class="portfolio-shell @(isDarkMode ? "theme-dark" : string.Empty)">
+    <Header IsDarkMode="isDarkMode" ToggleTheme="ToggleTheme" />
+
+    @Body
+
+    <Footer />
+</div>
+
+@code {
+    private bool isDarkMode;
+
+    private void ToggleTheme() => isDarkMode = !isDarkMode;
+}
