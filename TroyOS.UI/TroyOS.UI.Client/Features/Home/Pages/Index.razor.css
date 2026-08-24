@@ -15,19 +15,15 @@
 
 /* A restrained first-load reveal keeps the page feeling responsive while giving
    the main content a little room to arrive. */
-.portfolio-shell > header,
 .hero-copy,
 .hero-visual,
-.content-section,
-.site-footer {
+.content-section {
     animation: home-reveal .8s cubic-bezier(.22, 1, .36, 1) both;
 }
 
-.portfolio-shell > header { animation-delay: .05s; }
 .hero-copy { animation-delay: .12s; }
 .hero-visual { animation-delay: .2s; }
 .content-section { animation-delay: .38s; }
-.site-footer { animation-delay: .5s; }
 
 .capability-card {
     animation: home-card-reveal .75s cubic-bezier(.22, 1, .36, 1) both;
@@ -67,26 +63,6 @@
     color: #eaf5fc;
     background: radial-gradient(circle at 72% 18%, rgba(78, 142, 162, .2), transparent 30rem), #071a2a;
 }
-
-.portfolio-nav {
-    position: relative;
-    z-index: 10;
-    min-height: 4.25rem;
-    background: rgba(247, 249, 252, .72);
-    border: 1px solid rgba(255, 255, 255, .65);
-    box-shadow: 0 4px 20px rgba(0, 29, 57, .08);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-}
-
-.theme-dark .portfolio-nav { background: rgba(7, 26, 42, .78); }
-.brand-mark { color: var(--navy); font-size: 1.25rem; font-weight: 800; letter-spacing: -.04em; }
-.brand-mark span { color: var(--accent); }
-.nav-link { color: var(--navy); font-size: .82rem; font-weight: 600; }
-.nav-link:hover, .nav-link:focus { color: var(--accent); }
-.theme-toggle { border: 0; background: transparent; font-size: 1.15rem; }
-.nav-divider { height: 1.25rem; border-left: 1px solid rgba(0, 29, 57, .2); }
-.navbar-toggler { display: block; border: 0; color: var(--navy); font-size: 1.5rem; }
 
 .hero-section { position: relative; min-height: 90vh; padding-top: 2.5rem; padding-bottom: 3rem; overflow: visible; }
 .hero-content { min-height: 27rem; }
@@ -293,40 +269,6 @@
 }
 .principle-tile { min-height: 6rem; align-items: center; }
 .principle-badge { width: 2.45rem; height: 2.45rem; border-radius: 50%; font-size: .85rem; box-shadow: inset 0 -3px 8px rgba(123,189,232,.3); }
-.site-footer { position: relative; isolation: isolate; margin: 1rem; overflow: hidden; color: #eaf5fc; background: linear-gradient(125deg, #00152f, #002750 62%, #001a39); border: 1px solid rgba(123, 189, 232, .28); border-radius: .65rem; box-shadow: 0 12px 30px rgba(0, 29, 57, .18); }
-.site-footer::after { content: ""; position: absolute; z-index: -1; top: 0; right: 0; width: 17rem; height: 100%; opacity: .3; background-image: radial-gradient(#4e8ea2 1.2px, transparent 1.2px); background-size: 1.25rem 1.25rem; mask-image: linear-gradient(to left, #000, transparent); }
-.footer-content { max-width: 75rem; margin: 0 auto; padding: 3.5rem 2.5rem 1.4rem; }
-.footer-main-grid { display: grid; grid-template-columns: 1.35fr 1fr 1fr 1.25fr; gap: 2.75rem; }
-.footer-brand-mark { margin: 0 0 1.1rem; color: #f2f7fc; font-size: 2.25rem; font-weight: 800; letter-spacing: -.07em; }
-.footer-brand-mark span { color: #4e8ea2; }
-.footer-roles { margin: 0 0 1.25rem; color: #61b6ee; font-size: .75rem; font-weight: 700; }
-.footer-roles span { padding: 0 .35rem; color: #4e8ea2; }
-.footer-description { max-width: 17rem; margin: 0; color: rgba(234, 245, 252, .78); font-size: .88rem; line-height: 1.7; }
-.footer-social-links { display: flex; gap: .8rem; margin-top: 1.65rem; }
-.footer-social-button { display: grid; width: 3.1rem; height: 3.1rem; place-items: center; color: #eaf5fc; background: rgba(78, 142, 162, .12); border: 1px solid rgba(123, 189, 232, .38); border-radius: .55rem; font-size: 1.2rem; text-decoration: none; transition: background .2s ease, transform .2s ease; }
-.footer-social-button:hover { color: #fff; background: rgba(78, 142, 162, .3); transform: translateY(-2px); }
-.footer-column h2, .footer-connect h2 { position: relative; margin: .25rem 0 1.35rem; color: #f2f7fc; font-size: .88rem; font-weight: 800; text-transform: uppercase; }
-.footer-column h2::after, .footer-connect h2::after { content: ""; display: block; width: 1.45rem; margin-top: .65rem; border-bottom: 2px solid #4e8ea2; }
-.footer-column a { display: flex; align-items: center; gap: .7rem; padding: .7rem 0; color: rgba(234, 245, 252, .8); border-bottom: 1px solid rgba(123, 189, 232, .14); font-size: .78rem; text-decoration: none; }
-.footer-column a:last-child { border-bottom: 0; }
-.footer-column a:hover, .footer-legal a:hover { color: #61b6ee; }
-.footer-column a i { width: 1rem; color: #4e9ed5; font-size: 1rem; }
-.footer-connect p { max-width: 16rem; margin: 0 0 2rem; color: rgba(234, 245, 252, .78); font-size: .82rem; line-height: 1.9; }
-.footer-connect-button { display: flex; align-items: center; gap: .8rem; max-width: 13.5rem; padding: .9rem 1rem; color: #f2f7fc; border: 1px solid rgba(123, 189, 232, .48); border-radius: .55rem; font-size: .82rem; font-weight: 700; text-decoration: none; }
-.footer-connect-button span { flex: 1; }
-.footer-connect-button:hover { color: #fff; background: rgba(78, 142, 162, .2); }
-.footer-bottom { display: grid; grid-template-columns: 1.35fr 1fr 1.35fr; align-items: center; gap: 1.5rem; margin-top: 3rem; padding-top: 1.35rem; border-top: 1px solid rgba(123, 189, 232, .22); }
-.footer-copyright { display: flex; align-items: center; gap: .8rem; color: rgba(234, 245, 252, .82); font-size: .72rem; }
-.footer-copyright > i { display: grid; width: 3.1rem; height: 3.1rem; flex: 0 0 auto; place-items: center; color: #eaf5fc; background: rgba(78, 142, 162, .12); border: 1px solid rgba(123, 189, 232, .25); border-radius: .55rem; font-size: 1.25rem; }
-.footer-copyright div { display: grid; gap: .35rem; }
-.footer-copyright small { color: #61b6ee; font-size: .7rem; }
-.footer-bottom blockquote { margin: 0; color: rgba(234, 245, 252, .8); font-size: .8rem; line-height: 1.5; text-align: center; }
-.footer-legal { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: .65rem; color: rgba(234, 245, 252, .72); font-size: .68rem; }
-.footer-legal a { color: inherit; text-decoration: none; }
-.footer-legal > span { color: #4e8ea2; }
-.back-to-top { display: grid; width: 3.1rem; height: 3.1rem; margin-left: .8rem; place-items: center; border: 1px solid rgba(123, 189, 232, .25); border-radius: .55rem; font-size: 1rem; }
-.theme-dark .site-footer { border-color: rgba(123, 189, 232, .28); }
-
 @media (max-width: 991.98px) {
     .hero-section { padding-top: 1.5rem; padding-bottom: 2rem; }
     .hero-content { min-height: 0; }
@@ -338,10 +280,6 @@
     .capability-cards { width: 100%; max-width: none; margin: -5rem 0 0; }
     .capability-cards > .col { flex: 0 0 50%; max-width: 50%; }
     .capability-cards > .col:nth-child(3) { flex-basis: 100%; max-width: 100%; }
-    .footer-main-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; }
-    .footer-bottom { grid-template-columns: 1fr 1fr; }
-    .footer-bottom blockquote { order: 3; grid-column: 1 / -1; }
-    .footer-legal { justify-content: flex-end; }
 }
 
 @media (min-width: 992px) {
@@ -364,8 +302,6 @@
 }
 
 @media (max-width: 575.98px) {
-    .portfolio-nav { min-height: 3.75rem; }
-    .portfolio-nav .container-fluid { padding-left: 1rem; padding-right: 1rem; }
     .headline-gradient { font-size: clamp(3.25rem, 17vw, 5.5rem); }
     .hero-section { padding-left: 1rem !important; padding-right: 1rem !important; }
     .hero-visual { min-height: 23rem; margin-top: .5rem; }
@@ -381,22 +317,12 @@
     .capability-card ul { padding-left: 1rem; font-size: .75rem; }
     .hero-button { width: 100%; }
     .content-section { padding-left: 1rem !important; padding-right: 1rem !important; }
-    .site-footer { margin: .5rem; border-radius: .5rem; }
-    .footer-content { padding: 2.5rem 1.25rem 1.25rem; }
-    .footer-main-grid { grid-template-columns: 1fr; gap: 2rem; }
-    .footer-brand-mark { font-size: 2rem; }
-    .footer-bottom { grid-template-columns: 1fr; gap: 1.25rem; margin-top: 2rem; }
-    .footer-bottom blockquote { order: initial; grid-column: auto; text-align: left; }
-    .footer-legal { justify-content: flex-start; }
-    .back-to-top { margin-left: auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .portfolio-shell > header,
     .hero-copy,
     .hero-visual,
     .content-section,
-    .site-footer,
     .capability-card {
         animation: none;
     }
