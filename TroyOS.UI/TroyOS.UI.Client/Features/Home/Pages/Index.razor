@@ -4,10 +4,7 @@
 
 <PageTitle>Troy.ŌS | Engineering Leader &amp; AI Builder</PageTitle>
 
-<div class="portfolio-shell @(isDarkMode ? "theme-dark" : string.Empty)">
-    <Header IsDarkMode="isDarkMode" ToggleTheme="ToggleTheme" />
-
-    <main id="top">
+<main id="top">
         <section id="dashboard" class="hero-section container-fluid px-4 px-lg-5" aria-labelledby="hero-title">
             <div class="row align-items-center hero-content">
                 <div class="col-lg-6 hero-copy">
@@ -83,16 +80,10 @@
         </section>
 
         <Feedback />
-
-        <Footer />
-    </main>
-</div>
+</main>
 
 @code {
-    private bool isDarkMode;
     private readonly HashSet<int> flippedCards = [];
-
-    private void ToggleTheme() => isDarkMode = !isDarkMode;
 
     private void ToggleFlip(int index)
     {

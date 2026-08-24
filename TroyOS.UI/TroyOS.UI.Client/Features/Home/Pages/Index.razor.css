@@ -1,18 +1,3 @@
-.portfolio-shell {
-    --navy: #001D39;
-    --deep-blue: #0A4174;
-    --mid-blue: #49769F;
-    --accent: #4E8EA2;
-    --steel: #7BBDE8;
-    --pale-blue: #BDD8E9;
-    --base: #F7F9FC;
-    min-height: 100vh;
-    overflow-x: hidden;
-    color: var(--navy);
-    background: radial-gradient(circle at 72% 18%, rgba(189, 216, 233, .35), transparent 30rem), var(--base);
-    transition: background .25s ease, color .25s ease;
-}
-
 /* A restrained first-load reveal keeps the page feeling responsive while giving
    the main content a little room to arrive. */
 .hero-copy,
@@ -55,13 +40,6 @@
         opacity: 1;
         transform: translateY(0) scale(1);
     }
-}
-
-.portfolio-shell.theme-dark {
-    --base: #071a2a;
-    --navy: #eaf5fc;
-    color: #eaf5fc;
-    background: radial-gradient(circle at 72% 18%, rgba(78, 142, 162, .2), transparent 30rem), #071a2a;
 }
 
 .hero-section { position: relative; min-height: 90vh; padding-top: 2.5rem; padding-bottom: 3rem; overflow: visible; }
@@ -283,7 +261,6 @@
 }
 
 @media (min-width: 992px) {
-    .portfolio-shell { min-height: 100dvh; overflow: hidden; }
     .hero-section { height: 570px; min-height: 0; overflow: visible; }
 }
 
