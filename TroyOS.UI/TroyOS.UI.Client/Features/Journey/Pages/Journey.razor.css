@@ -602,8 +602,217 @@
 
 /* ===================== RESPONSIVE ===================== */
 @media (max-width: 991.98px) {
-    .stage-row { padding-left: 3rem; }
+    .journey-hero {
+        flex-direction: column;
+        min-height: 0;
+        padding-top: 1.5rem;
+        padding-bottom: 2.5rem;
+    }
+
+    .journey-hero > .row {
+        transform: none;
+    }
+
+    .hero-copy {
+        align-self: auto;
+        text-align: center;
+    }
+
+    .hero-lead {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .stat-chip-row {
+        justify-content: center;
+    }
+
+    .hero-visual {
+        min-height: 28rem;
+        margin-top: 1rem;
+    }
+
+    .hero-photo {
+        width: min(100%, 27rem);
+        height: auto;
+        max-height: 34rem;
+    }
+
+    .radial-rings {
+        width: min(65vw, 34rem);
+    }
+
+    .hero-next-control {
+        position: relative;
+        left: auto;
+        bottom: auto;
+        z-index: 10;
+        margin: 2.5rem auto 0;
+        transform: none;
+    }
+
+    .stage {
+        padding-top: 2.75rem;
+        padding-bottom: 2.75rem;
+    }
+
+    .stage-row {
+        padding-left: 3rem;
+    }
+
+    .next-anchor {
+        left: 0;
+    }
+
     .stage-content, .stage-quote-col { order: initial !important; }
+}
+
+@media (min-width: 992px) and (max-width: 1399.98px) {
+    .journey-hero {
+        min-height: 650px;
+    }
+
+    .journey-hero > .row {
+        transform: translateY(-1rem);
+    }
+
+    .eyebrow {
+        font-size: 2.75rem;
+    }
+
+    .hero-photo {
+        height: 31rem;
+    }
+
+    .hero-quote-card {
+        right: .5rem;
+    }
+
+    .stage {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+
+    .content-card {
+        padding: 1.25rem 1.35rem;
+    }
+
+    .stage-title {
+        font-size: 1.45rem;
+    }
+
+    .milestone-list li {
+        font-size: .82rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .journey-hero {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    .eyebrow {
+        font-size: 1.1rem;
+        letter-spacing: .12em;
+    }
+
+    .hero-title {
+        font-size: clamp(2.25rem, 11vw, 3.5rem);
+    }
+
+    .hero-lead {
+        font-size: .95rem;
+    }
+
+    .hero-visual {
+        min-height: 0;
+        margin-top: .5rem;
+    }
+
+    .hero-photo {
+        width: min(100%, 22rem);
+        height: 21rem;
+        max-height: 21rem;
+    }
+
+    .radial-rings,
+    .radial-rings--content {
+        width: min(100vw, 21rem);
+    }
+
+    .dot-grid--hero {
+        right: 0;
+        width: 6rem;
+        height: 6rem;
+    }
+
+    .hero-quote-card {
+        position: relative;
+        right: auto;
+        bottom: auto;
+        max-width: none;
+        margin: -1.5rem .25rem 0;
+    }
+
+    .hero-next-control {
+        margin-top: 2rem;
+    }
+
+    .stage {
+        padding-top: 2.25rem;
+        padding-bottom: 2.25rem;
+    }
+
+    .stage-row {
+        padding-left: 2.75rem;
+        row-gap: 1rem;
+    }
+
+    .content-card {
+        padding: 1.1rem 1rem;
+    }
+
+    .stage-heading {
+        gap: .7rem;
+    }
+
+    .icon-tile {
+        width: 3.25rem;
+        height: 3.25rem;
+        font-size: 1.35rem;
+    }
+
+    .stage-title {
+        font-size: 1.35rem;
+    }
+
+    .milestone-list li {
+        font-size: .82rem;
+    }
+
+    .stage-quote {
+        width: 100%;
+    }
+
+    .next-row {
+        margin-top: 1.75rem;
+    }
+
+    .next-label {
+        display: none;
+    }
+
+    .finale-rings {
+        right: -11rem;
+        width: 19rem;
+        height: 19rem;
+    }
+
+    .journey-footer-strip {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
