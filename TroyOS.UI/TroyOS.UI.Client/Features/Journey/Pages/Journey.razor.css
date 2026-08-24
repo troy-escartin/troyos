@@ -22,6 +22,7 @@
 
 .journey-hero > .row {
     width: 100%;
+    transform: translateY(-2rem);
 }
 
 .hero-next-control {
@@ -90,6 +91,7 @@
 .hero-title {
     margin: 0;
     color: var(--navy);
+    font-family: 'Inter', sans-serif;
     font-weight: 800;
     letter-spacing: -.02em;
     line-height: 1.05;
@@ -101,6 +103,7 @@
 .hero-lead {
     max-width: 32rem;
     color: var(--body-gray);
+    font-family: 'Inter', sans-serif;
     font-size: 1.05rem;
     line-height: 1.65;
 }
@@ -108,7 +111,7 @@
 .stat-chip-row { margin-top: .5rem; }
 
 .stat-chip {
-    flex: 1 1 0;
+    flex: 0 1 calc((100% - 2rem) / 3 * .9);
     min-width: 0;
     padding: 1rem 1.35rem;
     background: #fff;
@@ -136,7 +139,45 @@
     .stat-chip { flex-basis: 100%; }
 }
 
+.hero-copy {
+    align-self: flex-end;
+}
+
 .hero-visual { position: relative; }
+
+.radial-rings {
+    position: absolute;
+    top: 50%;
+    left: 30%;
+    z-index: 0;
+    width: min(72vw, 52rem);
+    aspect-ratio: 1;
+    border: 1px solid rgba(123, 189, 232, .42);
+    border-radius: 50%;
+    background: repeating-radial-gradient(circle, transparent 0 4.4rem, rgba(123, 189, 232, .25) 4.45rem 4.5rem);
+    transform: translate(-50%, -50%);
+}
+
+.radial-rings::after {
+    content: "";
+    position: absolute;
+    inset: 16%;
+    border: 1px solid rgba(78, 142, 162, .28);
+    border-radius: 50%;
+}
+
+.stage-content {
+    position: relative;
+}
+
+.radial-rings--content {
+    width: min(60vw, 42rem);
+}
+
+.stage-content .content-card {
+    position: relative;
+    z-index: 1;
+}
 
 .dot-grid {
     position: absolute;
@@ -166,8 +207,9 @@
 
 .hero-photo {
     width: 100%;
-    height: 22rem;
+    height: 35rem;
     object-fit: cover;
+    object-position: center 40%;
     border-radius: 1.25rem;
     box-shadow: 0 16px 40px rgba(0, 29, 57, .18);
 }
