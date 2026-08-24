@@ -1,0 +1,57 @@
+<section id="now" class="content-section container-fluid px-4 px-lg-5" aria-labelledby="focus-heading">
+    <h2 class="section-heading" id="focus-heading"><i class="bi bi-crosshair"></i> CURRENT FOCUS</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3 mb-4 focus-grid">
+        @for (var i = 0; i < focusItems.Length; i++)
+        {
+            var item = focusItems[i];
+            var index = i;
+            <div class="col">
+                <div class="focus-flip @(flippedCards.Contains(index) ? "is-flipped" : string.Empty)"
+                     tabindex="0" role="button" aria-pressed="@(flippedCards.Contains(index))"
+                     aria-label="@($"{item.Text}. Tap to flip card.")"
+                     @onclick="() => ToggleFlip(index)" @onkeydown="(e) => OnFlipKeyDown(e, index)">
+                    <div class="focus-flip-inner">
+                        <article class="glass-card focus-face focus-face-front">
+                            <span class="num-badge">@item.Number</span>
+                            <div class="focus-content">
+                                <h3>@item.Text</h3>
+                            </div>
+                        </article>
+                        <article class="glass-card focus-face focus-face-back">
+                            <div class="focus-content">
+                                <p class="focus-details">@item.Details</p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    private readonly HashSet<int> flippedCards = [];
+
+    private void ToggleFlip(int index)
+    {
+        if (!flippedCards.Add(index))
+        {
+            flippedCards.Remove(index);
+        }
+    }
+
+    private void OnFlipKeyDown(KeyboardEventArgs e, int index)
+    {
+        if (e.Key is "Enter" or " ")
+        {
+            ToggleFlip(index);
+        }
+    }
+
+    private readonly (string Number, string Text, string Details)[] focusItems =
+    [
+        ("01", "AI Assisted Engineering", "Use AI to accelerate research, coding, testing, and documentation. Keep engineering judgment and review at the center of every decision. Build faster while preserving quality, security, and maintainability."),
+        ("02", "Developer Productivity", "Remove friction from the tools, workflows, and feedback loops developers use every day. Automate repetitive work so teams can focus on solving meaningful problems. Measure improvement through flow, focus, and sustainable delivery."),
+        ("03", "Engineering Excellence", "Create a culture where quality is built into every stage of delivery. Favor reliable architecture, thoughtful testing, observability, and continuous improvement. Excellence means making good engineering practices repeatable across the team.")
+    ];
+}
