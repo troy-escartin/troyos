@@ -1,16 +1,15 @@
 <header class="home-header">
     <nav class="navbar navbar-expand-lg sticky-top portfolio-nav" aria-label="Primary navigation">
         <div class="container-fluid px-4 px-lg-5">
-            <a class="navbar-brand brand-mark" href="#top" aria-label="Troy.ŌS home">Troy.<span>ŌS</span></a>
+            <a class="navbar-brand brand-mark" href="/#top" aria-label="Troy.ŌS home">Troy.<span>ŌS</span></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#portfolioNav"
                     aria-controls="portfolioNav" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="bi bi-list"></i>
             </button>
             <div class="collapse navbar-collapse" id="portfolioNav">
                 <div class="navbar-nav ms-auto align-items-lg-center gap-lg-4">
-                    <a class="nav-link" href="/#dashboard">Dashboard</a>
-                    <NavLink class="nav-link" href="/journey" Match="NavLinkMatch.All">Journey</NavLink>
-                    <a class="nav-link" href="/#now">Now</a>
+                    <a class="nav-link" href="/#dashboard">Home</a>
+                    <a class="nav-link" href="/journey">Journey</a>
                     <span class="nav-divider d-none d-lg-block" aria-hidden="true"></span>
                     <button class="theme-toggle nav-link" type="button" @onclick="OnToggleTheme" aria-label="Toggle color theme">
                         <i class="bi @(IsDarkMode ? "bi-sun" : "bi-moon-stars")"></i>

@@ -6,12 +6,49 @@
     --body-gray: #56606B;
     --bg-a: #F7F9FC;
     --bg-b: #EEF3F9;
+    position: relative;
+    isolation: isolate;
     overflow-x: hidden;
+}
+
+.journey-hero,
+.journey-footer-strip {
+    animation: journey-reveal .8s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.hero-copy {
+    animation: journey-reveal .8s cubic-bezier(.22, 1, .36, 1) .1s both;
+}
+
+.hero-visual {
+    animation: journey-reveal .8s cubic-bezier(.22, 1, .36, 1) .2s both;
+}
+
+.timeline-wrap > .stage > .container-fluid > .stage-row {
+    animation: journey-reveal .8s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.timeline-wrap > .stage:nth-of-type(2) > .container-fluid > .stage-row { animation-delay: .12s; }
+.timeline-wrap > .stage:nth-of-type(3) > .container-fluid > .stage-row { animation-delay: .2s; }
+.timeline-wrap > .stage:nth-of-type(4) > .container-fluid > .stage-row { animation-delay: .28s; }
+.timeline-wrap > .stage:nth-of-type(5) > .container-fluid > .stage-row { animation-delay: .36s; }
+
+@keyframes journey-reveal {
+    from {
+        opacity: 0;
+        transform: translateY(1.25rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ===================== HERO ===================== */
 .journey-hero {
     position: relative;
+    z-index: 2;
     display: flex;
     align-items: center;
     min-height: 100vh;
@@ -149,7 +186,7 @@
     position: absolute;
     top: 50%;
     left: 30%;
-    z-index: 0;
+    z-index: 1;
     width: min(72vw, 52rem);
     aspect-ratio: 1;
     border: 1px solid rgba(123, 189, 232, .42);
@@ -262,6 +299,7 @@
 /* ===================== TIMELINE ===================== */
 .timeline-wrap {
     position: relative;
+    z-index: 1;
     scroll-snap-type: y proximity;
 }
 
@@ -273,6 +311,7 @@
     width: 2px;
     background: linear-gradient(180deg, var(--pale-blue), var(--bright-blue) 8%, var(--bright-blue) 92%, var(--pale-blue));
     z-index: 1;
+    pointer-events: none;
 }
 
 @media (min-width: 992px) {
@@ -298,6 +337,8 @@
 }
 
 .level-badge {
+    position: relative;
+    z-index: 4;
     display: inline-grid;
     place-items: center;
     width: 3.5rem;
@@ -309,6 +350,7 @@
     font-weight: 800;
     font-size: 1.1rem;
     box-shadow: 0 6px 16px rgba(0, 29, 57, .25);
+    z-index: 6;
 }
 
 .icon-tile {
@@ -385,6 +427,8 @@
 
 .stage-quote-col {
     display: flex;
+    position: relative;
+    z-index: 2;
 }
 
 @media (min-width: 992px) {
@@ -462,7 +506,7 @@
 
 .next-row {
     position: relative;
-    z-index: 4;
+    z-index: 6;
     margin-top: 2.25rem;
     height: 2.75rem;
 }
@@ -481,6 +525,8 @@
 }
 
 .next-button {
+    position: relative;
+    z-index: 6;
     display: inline-grid;
     place-items: center;
     width: 2.75rem;
@@ -538,6 +584,14 @@
 
 
 @media (prefers-reduced-motion: reduce) {
+    .journey-hero,
+    .hero-copy,
+    .hero-visual,
+    .timeline-wrap > .stage > .container-fluid > .stage-row,
+    .journey-footer-strip {
+        animation: none;
+    }
+
     .hero-next-button { animation: none; transition: none; }
     .next-button { animation: none; }
     .next-label { transition: none; }
@@ -646,7 +700,7 @@
         position: relative;
         left: auto;
         bottom: auto;
-        z-index: 10;
+        z-index: 3;
         margin: 2.5rem auto 0;
         transform: none;
     }
@@ -658,6 +712,7 @@
 
     .stage-row {
         padding-left: 3rem;
+        z-index: 2;
     }
 
     .next-anchor {
@@ -665,6 +720,12 @@
     }
 
     .stage-content, .stage-quote-col { order: initial !important; }
+
+    .stage-content .content-card,
+    .stage-quote-col .quote-card {
+        position: relative;
+        z-index: 3;
+    }
 }
 
 @media (min-width: 992px) and (max-width: 1399.98px) {
