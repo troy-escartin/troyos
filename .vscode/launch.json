@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "editor-browser",
+            "request": "launch",
+            "name": "Run TroyOS and Open Browser",
+            "url": "http://localhost:5195",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "msedge",
+            "request": "launch",
+            "name": "Run TroyOS in External Edge",
+            "url": "http://localhost:5195",
+            "webRoot": "${workspaceFolder}"
+        }
+    ]
+}
