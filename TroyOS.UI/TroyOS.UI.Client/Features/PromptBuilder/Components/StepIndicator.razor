@@ -1,0 +1,26 @@
+@using TroyOS.UI.Client.Features.PromptBuilder.Mock
+@using TroyOS.UI.Client.Features.PromptBuilder.Models
+
+<ul class="pb-steps" aria-label="Prompt slot progress">
+    @foreach (var def in PromptConversationScript.Slots)
+    {
+        var state = Slots[def.Type];
+        var isActive = CurrentSlot == def.Type;
+        var status = isActive ? "current" : state.IsAnswered ? "answered" : "pending";
+        var statusText = isActive
+            ? "current"
+            : state.IsAnswered
+                ? (state.IsAssumption ? "assumed" : "answered")
+                : "pending";
+
+        <li class="pb-step pb-step--@status" aria-current="@(isActive ? "step" : null)">
+            <span class="pb-step-dot" aria-hidden="true">@def.ShortLabel[0]</span>
+            <span class="visually-hidden">@def.AriaLabel: @statusText</span>
+        </li>
+    }
+</ul>
+
+@code {
+    [Parameter, EditorRequired] public PromptSlots Slots { get; set; } = null!;
+    [Parameter] public SlotType? CurrentSlot { get; set; }
+}

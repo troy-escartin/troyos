@@ -1,0 +1,21 @@
+@using TroyOS.UI.Client.Features.PromptBuilder.Models
+
+<div class="pb-transcript" role="log" aria-live="polite" aria-relevant="additions" @ref="ContainerRef">
+    @foreach (var message in Messages)
+    {
+        <MessageBubble @key="message.Id"
+                        Message="message"
+                        IsActive="message.Id == ActiveMessageId"
+                        OnChipClick="OnChipClick"
+                        OnSkipClick="OnSkipClick" />
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<ChatMessage> Messages { get; set; } = [];
+    [Parameter] public Guid? ActiveMessageId { get; set; }
+    [Parameter] public EventCallback<ChipOption> OnChipClick { get; set; }
+    [Parameter] public EventCallback OnSkipClick { get; set; }
+
+    public ElementReference ContainerRef;
+}

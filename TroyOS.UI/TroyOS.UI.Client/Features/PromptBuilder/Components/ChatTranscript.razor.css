@@ -1,0 +1,24 @@
+.pb-transcript {
+    display: flex;
+    flex-direction: column;
+    max-height: 32rem;
+    padding: 1rem;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, .5);
+    border: 1px solid rgba(255, 255, 255, .6);
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 29, 57, .06);
+    scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pb-transcript {
+        scroll-behavior: auto;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .pb-transcript {
+        max-height: 60vh;
+    }
+}

@@ -13,7 +13,8 @@
             "request": "launch",
             "name": "Run TroyOS in External Edge",
             "url": "http://localhost:5195",
-            "webRoot": "${workspaceFolder}"
+            "webRoot": "${workspaceFolder}",
+            "preLaunchTask": "Run TroyOS"
         }
     ]
 }

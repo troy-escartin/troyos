@@ -1,0 +1,31 @@
+@using TroyOS.UI.Client.Features.PromptBuilder.Mock
+@using TroyOS.UI.Client.Features.PromptBuilder.Models
+
+<div class="pb-preview-row-wrap">
+    <span class="pb-preview-label" id="@($"pb-row-{Definition.Type}")">@Definition.ShortLabel</span>
+
+    @if (State.IsAnswered)
+    {
+        <button type="button"
+                class="pb-preview-value pb-preview-value--filled @(State.IsAssumption ? "pb-preview-value--assumed" : string.Empty) @(IsEditing ? "pb-preview-value--editing" : string.Empty)"
+                aria-labelledby="@($"pb-row-{Definition.Type}")"
+                @onclick="() => OnClick.InvokeAsync()">
+            <span>@State.Value</span>
+            @if (State.IsAssumption)
+            {
+                <span class="pb-assumed-badge">Assumed</span>
+            }
+        </button>
+    }
+    else
+    {
+        <div class="pb-preview-value pb-preview-value--empty">Not provided yet</div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public SlotDefinition Definition { get; set; } = null!;
+    [Parameter, EditorRequired] public PromptSlotState State { get; set; } = null!;
+    [Parameter] public bool IsEditing { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+}

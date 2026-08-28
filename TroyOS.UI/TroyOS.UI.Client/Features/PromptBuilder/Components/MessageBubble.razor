@@ -1,0 +1,51 @@
+@using TroyOS.UI.Client.Features.PromptBuilder.Models
+
+<div class="pb-message-row pb-message-row--@Message.Sender.ToString().ToLowerInvariant()">
+    <span class="pb-avatar" aria-hidden="true">
+        <i class="bi @(Message.Sender == ChatSender.Assistant ? "bi-robot" : "bi-person-fill")"></i>
+    </span>
+    <div class="pb-bubble pb-bubble--@Message.Sender.ToString().ToLowerInvariant()">
+        @if (Message.IsThinkingIndicator)
+        {
+            <span class="pb-typing" aria-hidden="true"><span></span><span></span><span></span></span>
+            <span class="visually-hidden">Assistant is typing</span>
+        }
+        else
+        {
+            <p class="pb-bubble-text">@Message.Text</p>
+
+            @if (!string.IsNullOrEmpty(Message.HelperText))
+            {
+                <p class="pb-bubble-helper">@Message.HelperText</p>
+            }
+
+            @if (Message.Chips is { Count: > 0 })
+            {
+                <div class="pb-chip-row">
+                    @foreach (var chip in Message.Chips)
+                    {
+                        <button type="button" class="pb-chip" disabled="@(!IsActive)"
+                                @onclick="() => OnChipClick.InvokeAsync(chip)">
+                            @chip.Label
+                        </button>
+                    }
+                </div>
+            }
+
+            @if (Message.SkipSlot is not null)
+            {
+                <button type="button" class="pb-skip-link" disabled="@(!IsActive)"
+                        @onclick="() => OnSkipClick.InvokeAsync()">
+                    Skip
+                </button>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public ChatMessage Message { get; set; } = null!;
+    [Parameter] public bool IsActive { get; set; } = true;
+    [Parameter] public EventCallback<ChipOption> OnChipClick { get; set; }
+    [Parameter] public EventCallback OnSkipClick { get; set; }
+}

@@ -1,0 +1,92 @@
+@using Microsoft.JSInterop
+@implements IAsyncDisposable
+
+<div class="pb-composer">
+    @if (HasValidationError)
+    {
+        <p class="pb-composer-error" role="alert">@ValidationMessage</p>
+    }
+    <div class="pb-composer-row @(HasValidationError ? "pb-composer-row--error" : string.Empty)">
+        <textarea class="pb-composer-input"
+                   placeholder="@Placeholder"
+                   value="@Value"
+                   disabled="@IsDisabled"
+                   aria-label="Type your answer"
+                   aria-invalid="@HasValidationError"
+                   @ref="_textAreaRef"
+                   @oninput="HandleInput"></textarea>
+        <button type="button" class="pb-send-btn" disabled="@IsDisabled" aria-label="Send message"
+                @onclick="() => OnSend.InvokeAsync()">
+            <i class="bi bi-send-fill" aria-hidden="true"></i>
+        </button>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Value { get; set; } = string.Empty;
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public EventCallback OnSend { get; set; }
+    [Parameter] public bool IsDisabled { get; set; }
+    [Parameter] public bool HasValidationError { get; set; }
+    [Parameter] public string? ValidationMessage { get; set; }
+    [Parameter] public string Placeholder { get; set; } = "Type your answer...";
+    [Parameter] public IJSObjectReference? JsModule { get; set; }
+
+    private ElementReference _textAreaRef;
+    private DotNetObjectReference<Composer>? _selfRef;
+    private bool _boundKeydown;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (JsModule is null || _boundKeydown)
+        {
+            return;
+        }
+
+        _selfRef = DotNetObjectReference.Create(this);
+        await JsModule.InvokeVoidAsync("bindEnterToSend", _textAreaRef, _selfRef);
+        _boundKeydown = true;
+    }
+
+    [JSInvokable]
+    public async Task HandleEnterSubmit()
+    {
+        await OnSend.InvokeAsync();
+    }
+
+    public async Task FocusInputAsync()
+    {
+        if (JsModule is not null)
+        {
+            await JsModule.InvokeVoidAsync("focusElement", _textAreaRef);
+        }
+    }
+
+    private async Task HandleInput(ChangeEventArgs e)
+    {
+        Value = e.Value?.ToString() ?? string.Empty;
+        await ValueChanged.InvokeAsync(Value);
+
+        if (JsModule is not null)
+        {
+            await JsModule.InvokeVoidAsync("autoResizeTextArea", _textAreaRef);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (JsModule is not null && _boundKeydown)
+        {
+            try
+            {
+                await JsModule.InvokeVoidAsync("unbindEnterToSend", _textAreaRef);
+            }
+            catch (JSDisconnectedException)
+            {
+                // Circuit already torn down; nothing further to clean up.
+            }
+        }
+
+        _selfRef?.Dispose();
+    }
+}

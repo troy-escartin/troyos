@@ -1,0 +1,67 @@
+@using Microsoft.JSInterop
+@using TroyOS.UI.Client.Features.PromptBuilder.Mock
+@using TroyOS.UI.Client.Features.PromptBuilder.Models
+@implements IDisposable
+
+<aside class="pb-preview @(Slots.AllAnswered ? "pb-preview--complete" : string.Empty)" aria-label="Prompt preview">
+    <div class="pb-preview-header">
+        <h2 class="pb-preview-title">Prompt Preview</h2>
+        <button type="button" class="btn btn-outline-dark pb-copy-btn" disabled="@(string.IsNullOrWhiteSpace(AssembledPrompt))"
+                @onclick="CopyAsync">
+            <i class="bi @(_copySucceeded ? "bi-check2" : "bi-clipboard")" aria-hidden="true"></i>
+            @(_copySucceeded ? "Copied!" : "Copy")
+        </button>
+    </div>
+
+    @foreach (var def in PromptConversationScript.Slots)
+    {
+        <PreviewRow Definition="def" State="Slots[def.Type]" IsEditing="EditingSlot == def.Type"
+                    OnClick="() => OnEditSlot.InvokeAsync(def.Type)" />
+    }
+
+    <pre class="pb-preview-code" aria-label="Assembled prompt"><code>@AssembledPrompt</code></pre>
+</aside>
+
+@code {
+    [Parameter, EditorRequired] public PromptSlots Slots { get; set; } = null!;
+    [Parameter] public SlotType? EditingSlot { get; set; }
+    [Parameter] public string AssembledPrompt { get; set; } = string.Empty;
+    [Parameter] public EventCallback<SlotType> OnEditSlot { get; set; }
+    [Parameter] public IJSObjectReference? JsModule { get; set; }
+
+    private bool _copySucceeded;
+    private CancellationTokenSource? _resetCts;
+
+    private async Task CopyAsync()
+    {
+        if (JsModule is null || string.IsNullOrWhiteSpace(AssembledPrompt))
+        {
+            return;
+        }
+
+        var success = await JsModule.InvokeAsync<bool>("copyText", AssembledPrompt);
+        if (!success)
+        {
+            return;
+        }
+
+        _resetCts?.Cancel();
+        _resetCts = new CancellationTokenSource();
+        var token = _resetCts.Token;
+        _copySucceeded = true;
+        StateHasChanged();
+
+        try
+        {
+            await Task.Delay(2000, token);
+            _copySucceeded = false;
+            StateHasChanged();
+        }
+        catch (TaskCanceledException)
+        {
+            // Superseded by a newer copy action.
+        }
+    }
+
+    public void Dispose() => _resetCts?.Cancel();
+}
