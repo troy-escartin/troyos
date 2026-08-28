@@ -1,0 +1,99 @@
+@page "/prompt-builder"
+
+<PageTitle>AI Prompt Helper | Troy.OS</PageTitle>
+
+<main class="prompt-builder-landing">
+    <section class="pb-landing-hero container-fluid px-4 px-lg-5" aria-labelledby="pb-landing-title">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 pb-landing-copy">
+                <span class="pb-feature-label"><i class="bi bi-stars" aria-hidden="true"></i> NEW FEATURE</span>
+                <h1 id="pb-landing-title">AI Prompt Helper</h1>
+                <p class="pb-landing-lead">Build better prompts. Get better results.</p>
+                <p class="pb-landing-description">
+                    Tell me what you want AI to help you achieve. I'll ask a few smart questions and craft the perfect prompt for your goal.
+                </p>
+                <div class="pb-landing-actions">
+                    <a class="btn btn-dark pb-primary-action" href="/prompt-builder/build">
+                        Start Building a Prompt <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    </a>
+                    <a class="pb-learn-link" href="#how-it-works">
+                        <i class="bi bi-play-circle" aria-hidden="true"></i> Learn how it works
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 pb-hero-art-col" aria-hidden="true">
+                <div class="pb-hero-art">
+                    <div class="pb-art-spark pb-art-spark--one">✦</div>
+                    <div class="pb-art-spark pb-art-spark--two">✦</div>
+                    <div class="pb-art-sheet">
+                        <div class="pb-art-window">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <div class="pb-art-line pb-art-line--long"></div>
+                        <div class="pb-art-line pb-art-line--medium"></div>
+                        <div class="pb-art-line pb-art-line--short"></div>
+                    </div>
+                    <div class="pb-art-chat">
+                        <div class="pb-art-window">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <div class="pb-art-chat-tail"></div>
+                    </div>
+                    <div class="pb-art-wand"><span></span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pb-use-cases container-fluid px-4 px-lg-5" aria-labelledby="pb-use-cases-title">
+        <h2 id="pb-use-cases-title">Popular Use Cases</h2>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
+            @foreach (var useCase in UseCases)
+            {
+                <div class="col">
+                    <a class="pb-use-case" href="/prompt-builder/build">
+                        <i class="bi @useCase.Icon pb-use-case-icon" aria-hidden="true"></i>
+                        <h3>@useCase.Title</h3>
+                        <p>@useCase.Description</p>
+                    </a>
+                </div>
+            }
+        </div>
+    </section>
+
+    <section id="how-it-works" class="pb-how-it-works container-fluid px-4 px-lg-5" aria-labelledby="pb-how-title">
+        <h2 id="pb-how-title">How it works</h2>
+        <div class="pb-how-grid">
+            @foreach (var step in Steps)
+            {
+                <article class="pb-how-step">
+                    <span class="pb-how-number">@step.Number</span>
+                    <span class="pb-how-connector" aria-hidden="true"></span>
+                    <h3>@step.Title</h3>
+                    <p>@step.Description</p>
+                </article>
+            }
+        </div>
+    </section>
+</main>
+
+@code {
+    private sealed record UseCase(string Icon, string Title, string Description);
+    private sealed record HowStep(string Number, string Title, string Description);
+
+    private static readonly IReadOnlyList<UseCase> UseCases =
+    [
+        new("bi-code-slash", "Software Development", "Code, refactor, debug, tests, and best practices"),
+        new("bi-file-earmark-text", "Product & Requirements", "PRDs, user stories, specs, and product strategy"),
+        new("bi-graph-up-arrow", "Business & Strategy", "Plans, analysis, research, and decision support"),
+        new("bi-people", "Leadership & Management", "1:1s, feedback, team growth, and planning")
+    ];
+
+    private static readonly IReadOnlyList<HowStep> Steps =
+    [
+        new("1", "Describe your goal", "Tell me what you want to achieve."),
+        new("2", "Answer a few questions", "I'll gather the right context."),
+        new("3", "Get your prompt", "Receive a high-quality prompt tailored to your goal."),
+        new("4", "Use & improve", "Copy, use it with any AI, and refine as needed.")
+    ];
+}
