@@ -1,11 +1,17 @@
 .prompt-builder-page {
     --pb-error: #e50000;
     --pb-success: #1a7f37;
+    height: calc(100dvh - 4.25rem);
+    overflow: hidden;
 }
 
 .content-section {
-    padding-top: 1.7rem;
-    padding-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-width: 72rem;
+    padding-top: 1.25rem;
+    padding-bottom: 3rem;
     border-top: 1px solid rgba(73, 118, 159, .12);
 }
 
@@ -22,12 +28,17 @@
 }
 
 .pb-layout {
+    flex: 1 1 auto;
+    min-height: 0;
     align-items: flex-start;
+    margin-top: 0;
 }
 
 .pb-chat-col {
     display: flex;
     flex-direction: column;
+    height: 100%;
+    min-width: 0;
 }
 
 .pb-build-now-link {
@@ -65,6 +76,10 @@
 @media (max-width: 991.98px) {
     .pb-chat-col {
         padding-bottom: 5.5rem;
+    }
+
+    .prompt-builder-page {
+        height: calc(100dvh - 3.75rem);
     }
 
     .pb-preview-col {

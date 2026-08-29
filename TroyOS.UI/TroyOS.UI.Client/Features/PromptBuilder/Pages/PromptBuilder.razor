@@ -9,6 +9,16 @@
 <PageTitle>Prompt Builder | Troy.OS</PageTitle>
 
 <main class="prompt-builder-page">
+    @if (_showResult)
+    {
+        <CompletedPrompt AssembledPrompt="AssembledPrompt"
+                         OnBackToChat="ReturnToChat"
+                         OnStartOver="StartOver"
+                         OnRefinePrompt="ReturnToChat"
+                         JsModule="_jsModule" />
+    }
+    else
+    {
     <section class="content-section container-fluid px-4 px-lg-5" aria-labelledby="pb-heading">
         <header class="pb-page-header d-flex align-items-center justify-content-between flex-wrap gap-3">
             <h1 id="pb-heading" class="pb-page-title">Prompt Builder</h1>
@@ -54,6 +64,7 @@
             </div>
         </div>
     </section>
+    }
 </main>
 
 @code {
@@ -66,6 +77,7 @@
     private bool _validationError;
     private string? _validationMessage;
     private bool _previewExpanded;
+    private bool _showResult;
 
     private IJSObjectReference? _jsModule;
     private ChatTranscript? _transcriptRef;
@@ -326,6 +338,7 @@
             Text = "Your prompt is ready! Review it in the preview panel, or click any field there to fine-tune it."
         });
         _currentSlot = null;
+        _showResult = true;
     }
 
     private void BuildNow()
@@ -349,6 +362,7 @@
 
     private async Task HandleEditSlot(SlotType slot)
     {
+        _showResult = false;
         var def = GetDefinition(slot);
         _messages.Add(new ChatMessage
         {
@@ -380,6 +394,29 @@
     {
         _validationError = false;
         _validationMessage = null;
+    }
+
+    private void ReturnToChat()
+    {
+        _showResult = false;
+        StateHasChanged();
+    }
+
+    private void StartOver()
+    {
+        _messages.Clear();
+        foreach (var def in PromptConversationScript.Slots)
+        {
+            _slots[def.Type].Value = null;
+            _slots[def.Type].IsAssumption = false;
+        }
+
+        _composerText = string.Empty;
+        _isThinking = false;
+        _isReEditing = false;
+        _showResult = false;
+        ClearValidationError();
+        AddAssistantQuestion(SlotType.Role);
     }
 
     public async ValueTask DisposeAsync()

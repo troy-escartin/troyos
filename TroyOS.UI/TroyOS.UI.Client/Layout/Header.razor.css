@@ -38,7 +38,13 @@
 }
 .theme-toggle { border: 0; background: transparent; font-size: 1.15rem; }
 .nav-divider { height: 1.25rem; border-left: 1px solid rgba(0, 29, 57, .2); }
-.navbar-toggler { display: block; border: 0; color: var(--navy); font-size: 1.5rem; }
+.navbar-toggler { border: 0; color: var(--navy); font-size: 1.5rem; }
+
+/* Bootstrap only hides the toggler above lg inside its own media query, and this
+   scoped rule has matching specificity, so it must stay scoped to below lg too. */
+@media (max-width: 991.98px) {
+    .navbar-toggler { display: block; }
+}
 
 @media (max-width: 575.98px) {
     .portfolio-nav { min-height: 3.75rem; }

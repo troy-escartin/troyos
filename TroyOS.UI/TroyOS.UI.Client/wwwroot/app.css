@@ -4,6 +4,17 @@ h1:focus {
     outline: none;
 }
 
+/* Offset anchor scrolling by the sticky header height so targets aren't hidden underneath it. */
+#top, #dashboard, #now, #journey {
+    scroll-margin-top: 4.25rem;
+}
+
+@media (max-width: 575.98px) {
+    #top, #dashboard, #now, #journey {
+        scroll-margin-top: 3.75rem;
+    }
+}
+
 #app {
     min-height: 100vh;
 }
