@@ -6,94 +6,158 @@
     <section class="pb-landing-hero container-fluid px-4 px-lg-5" aria-labelledby="pb-landing-title">
         <div class="row align-items-center g-5">
             <div class="col-lg-6 pb-landing-copy">
-                <span class="pb-feature-label"><i class="bi bi-stars" aria-hidden="true"></i> NEW FEATURE</span>
-                <h1 id="pb-landing-title">AI Prompt Helper</h1>
-                <p class="pb-landing-lead">Build better prompts. Get better results.</p>
+                <span class="pb-feature-label"><i class="bi bi-stars" aria-hidden="true"></i> AI PROMPT BUILDER</span>
+                <h1 id="pb-landing-title">Build Better Prompts.<br /><span class="pb-landing-title-accent">Get Better Results.</span></h1>
                 <p class="pb-landing-description">
-                    Tell me what you want AI to help you achieve. I'll ask a few smart questions and craft the perfect prompt for your goal.
+                    Describe what you want to achieve and I'll help you craft high-quality prompts using proven frameworks.
                 </p>
                 <div class="pb-landing-actions">
                     <a class="btn btn-dark pb-primary-action" href="/prompt-builder/build">
-                        Start Building a Prompt <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                        <i class="bi bi-stars" aria-hidden="true"></i> Start Building a Prompt <i class="bi bi-arrow-right" aria-hidden="true"></i>
                     </a>
-                    <a class="pb-learn-link" href="#how-it-works">
-                        <i class="bi bi-play-circle" aria-hidden="true"></i> Learn how it works
+                    <a class="btn pb-secondary-action" href="#how-it-works">
+                        <i class="bi bi-play-circle" aria-hidden="true"></i> See how it works
                     </a>
                 </div>
+                <ul class="pb-feature-pills list-unstyled d-flex flex-wrap gap-2">
+                    @foreach (var pill in FeaturePills)
+                    {
+                        <li class="pb-feature-pill"><i class="bi @pill.Icon" aria-hidden="true"></i> @pill.Label</li>
+                    }
+                </ul>
             </div>
-            <div class="col-lg-6 pb-hero-art-col" aria-hidden="true">
-                <div class="pb-hero-art">
-                    <div class="pb-art-spark pb-art-spark--one">✦</div>
-                    <div class="pb-art-spark pb-art-spark--two">✦</div>
-                    <div class="pb-art-sheet">
-                        <div class="pb-art-window">
-                            <span></span><span></span><span></span>
-                        </div>
-                        <div class="pb-art-line pb-art-line--long"></div>
-                        <div class="pb-art-line pb-art-line--medium"></div>
-                        <div class="pb-art-line pb-art-line--short"></div>
+            <div class="col-lg-6 pb-hero-art-col">
+                <div class="pb-chat-card" aria-hidden="true">
+                    <div class="pb-chat-row pb-chat-row--user">
+                        <span class="pb-chat-avatar pb-chat-avatar--user"><i class="bi bi-person-fill"></i></span>
+                        <span class="pb-chat-bubble pb-chat-bubble--user">What do you want AI help with?</span>
                     </div>
-                    <div class="pb-art-chat">
-                        <div class="pb-art-window">
-                            <span></span><span></span><span></span>
-                        </div>
-                        <div class="pb-art-chat-tail"></div>
+                    <div class="pb-chat-row pb-chat-row--ai">
+                        <span class="pb-chat-avatar pb-chat-avatar--ai"><i class="bi bi-stars"></i></span>
+                        <span class="pb-chat-bubble pb-chat-bubble--ai">
+                            I'll help you build the perfect prompt.
+                            <span class="pb-chat-typing"><span></span><span></span><span></span></span>
+                        </span>
                     </div>
-                    <div class="pb-art-wand"><span></span></div>
+                    <span class="pb-chat-wand-badge"><i class="bi bi-magic"></i></span>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="pb-use-cases container-fluid px-4 px-lg-5" aria-labelledby="pb-use-cases-title">
-        <h2 id="pb-use-cases-title">Popular Use Cases</h2>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
-            @foreach (var useCase in UseCases)
-            {
-                <div class="col">
-                    <a class="pb-use-case" href="/prompt-builder/build">
-                        <i class="bi @useCase.Icon pb-use-case-icon" aria-hidden="true"></i>
-                        <h3>@useCase.Title</h3>
-                        <p>@useCase.Description</p>
-                    </a>
-                </div>
-            }
-        </div>
-    </section>
+    <section id="how-it-works" class="pb-explore container-fluid px-4 px-lg-5" aria-label="Framework and process overview">
+        <button type="button" class="pb-explore-nav pb-explore-nav--start" aria-label="Previous">
+            <i class="bi bi-chevron-left" aria-hidden="true"></i>
+        </button>
 
-    <section id="how-it-works" class="pb-how-it-works container-fluid px-4 px-lg-5" aria-labelledby="pb-how-title">
-        <h2 id="pb-how-title">How it works</h2>
-        <div class="pb-how-grid">
-            @foreach (var step in Steps)
-            {
-                <article class="pb-how-step">
-                    <span class="pb-how-number">@step.Number</span>
-                    <span class="pb-how-connector" aria-hidden="true"></span>
-                    <h3>@step.Title</h3>
-                    <p>@step.Description</p>
+        <div class="row g-4 pb-explore-row">
+            <div class="col-lg-6">
+                <article class="pb-explore-card">
+                    <header class="pb-explore-card-header">
+                        <h2><i class="bi bi-gem" aria-hidden="true"></i> The RACE Framework</h2>
+                        <a class="pb-learn-more" href="#">Learn more <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+                    </header>
+                    <p class="pb-explore-card-subtitle">A simple framework to structure powerful prompts.</p>
+
+                    <div class="row row-cols-2 row-cols-md-4 g-3 pb-race-grid">
+                        @foreach (var item in RaceItems)
+                        {
+                            <div class="col">
+                                <div class="pb-race-item">
+                                    <span class="pb-race-badge" style="background:@item.Color">@item.Letter</span>
+                                    <i class="bi @item.Icon pb-race-icon" style="color:@item.Color" aria-hidden="true"></i>
+                                    <h3>@item.Title</h3>
+                                    <p>@item.Description</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="pb-carousel-dots" aria-hidden="true">
+                        <span class="active"></span><span></span><span></span><span></span><span></span>
+                    </div>
                 </article>
-            }
+            </div>
+
+            <div class="col-lg-6">
+                <article class="pb-explore-card">
+                    <header class="pb-explore-card-header">
+                        <h2><i class="bi bi-gear" aria-hidden="true"></i> How It Works</h2>
+                        <a class="pb-learn-more" href="#">Learn more <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+                    </header>
+                    <p class="pb-explore-card-subtitle">Four simple steps from idea to impactful prompt.</p>
+
+                    <div class="pb-how-steps">
+                        @for (var i = 0; i < Steps.Count; i++)
+                        {
+                            var step = Steps[i];
+                            <div class="pb-how-step">
+                                <span class="pb-how-number">@step.Number</span>
+                                <span class="pb-how-icon-box"><i class="bi @step.Icon" aria-hidden="true"></i></span>
+                                <h3>@step.Title</h3>
+                                <p>@step.Description</p>
+                            </div>
+                            if (i < Steps.Count - 1)
+                            {
+                                <span class="pb-how-arrow" aria-hidden="true"><i class="bi bi-arrow-right"></i></span>
+                            }
+                        }
+                    </div>
+
+                    <div class="pb-carousel-dots" aria-hidden="true">
+                        <span class="active"></span><span></span><span></span><span></span><span></span>
+                    </div>
+                </article>
+            </div>
+        </div>
+
+        <button type="button" class="pb-explore-nav pb-explore-nav--end" aria-label="Next">
+            <i class="bi bi-chevron-right" aria-hidden="true"></i>
+        </button>
+    </section>
+
+    <section class="pb-privacy-bar container-fluid px-4 px-lg-5">
+        <div class="pb-privacy-inner d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-shield-check pb-privacy-icon" aria-hidden="true"></i>
+                <p class="mb-0">
+                    <strong>Your data is private and secure.</strong>
+                    <span class="pb-privacy-desc">We never store your inputs. Everything is processed securely and privately.</span>
+                </p>
+            </div>
+            <a class="btn pb-privacy-btn" href="#">
+                <i class="bi bi-lock-fill" aria-hidden="true"></i> Privacy First
+            </a>
         </div>
     </section>
 </main>
 
 @code {
-    private sealed record UseCase(string Icon, string Title, string Description);
-    private sealed record HowStep(string Number, string Title, string Description);
+    private sealed record FeaturePill(string Icon, string Label);
+    private sealed record RaceItem(string Letter, string Icon, string Color, string Title, string Description);
+    private sealed record HowStep(string Number, string Icon, string Title, string Description);
 
-    private static readonly IReadOnlyList<UseCase> UseCases =
+    private static readonly IReadOnlyList<FeaturePill> FeaturePills =
     [
-        new("bi-code-slash", "Software Development", "Code, refactor, debug, tests, and best practices"),
-        new("bi-file-earmark-text", "Product & Requirements", "PRDs, user stories, specs, and product strategy"),
-        new("bi-graph-up-arrow", "Business & Strategy", "Plans, analysis, research, and decision support"),
-        new("bi-people", "Leadership & Management", "1:1s, feedback, team growth, and planning")
+        new("bi-hexagon", "Framework-driven"),
+        new("bi-stars", "AI-powered"),
+        new("bi-clipboard-check", "Copy & use anywhere"),
+        new("bi-shield-lock", "Private & secure")
+    ];
+
+    private static readonly IReadOnlyList<RaceItem> RaceItems =
+    [
+        new("R", "bi-person-fill", "#2f6fed", "Role", "Define the AI's role and expertise."),
+        new("A", "bi-bullseye", "#0fb37d", "Action", "Clearly state what you want to achieve."),
+        new("C", "bi-file-earmark-text-fill", "#7c3aed", "Context", "Add relevant context and background."),
+        new("E", "bi-chat-square-text-fill", "#f59e0b", "Expectations", "Specify the output format and tone.")
     ];
 
     private static readonly IReadOnlyList<HowStep> Steps =
     [
-        new("1", "Describe your goal", "Tell me what you want to achieve."),
-        new("2", "Answer a few questions", "I'll gather the right context."),
-        new("3", "Get your prompt", "Receive a high-quality prompt tailored to your goal."),
-        new("4", "Use & improve", "Copy, use it with any AI, and refine as needed.")
+        new("1", "bi-pencil-fill", "Describe Your Goal", "Tell me what you want to accomplish."),
+        new("2", "bi-patch-question-fill", "Answer Smart Questions", "I'll ask a few questions to get the right context."),
+        new("3", "bi-stars", "Build Your Prompt", "I'll craft a high-quality prompt tailored to your goal."),
+        new("4", "bi-check2-square", "Use & Improve", "Copy it, use it with any AI, and refine as needed.")
     ];
 }
