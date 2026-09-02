@@ -21,7 +21,7 @@
 }
 
 @media (min-width: 992px) {
-    .portfolio-shell { min-height: 100dvh; overflow: hidden; }
+    .portfolio-shell { min-height: 100dvh; overflow-x: hidden; }
 }
 
 #blazor-error-ui {

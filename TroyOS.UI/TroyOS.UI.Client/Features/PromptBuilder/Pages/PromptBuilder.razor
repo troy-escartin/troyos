@@ -9,13 +9,15 @@
 <PageTitle>Prompt Builder | Troy.OS</PageTitle>
 
 <main class="prompt-builder-page">
+    <div class="radial-rings radial-rings--bottom-right" aria-hidden="true"></div>
+    <div class="radial-rings radial-rings--top-left" aria-hidden="true"></div>
     @if (_showResult)
     {
-        <CompletedPrompt AssembledPrompt="AssembledPrompt"
+        <CompletedPrompt AssembledPrompt="@AssembledPrompt"
                          OnBackToChat="ReturnToChat"
                          OnStartOver="StartOver"
                          OnRefinePrompt="ReturnToChat"
-                         JsModule="_jsModule" />
+                         JsModule="@_jsModule" />
     }
     else
     {
@@ -34,7 +36,7 @@
                                  OnSkipClick="HandleSkip" />
 
                 <Composer @ref="_composerRef"
-                          Value="_composerText"
+                          Value="@_composerText"
                           ValueChanged="v => _composerText = v"
                           OnSend="HandleSend"
                           IsDisabled="_isThinking || _currentSlot is null"

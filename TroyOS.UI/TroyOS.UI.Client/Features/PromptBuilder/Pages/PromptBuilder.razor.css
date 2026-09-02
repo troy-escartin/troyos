@@ -1,11 +1,42 @@
 .prompt-builder-page {
     --pb-error: #e50000;
     --pb-success: #1a7f37;
+    position: relative;
     height: calc(100dvh - 4.25rem);
     overflow: hidden;
 }
 
+.radial-rings {
+    position: absolute;
+    width: min(70vw, 48rem);
+    aspect-ratio: 1;
+    border: 1px solid rgba(123, 189, 232, .42);
+    border-radius: 50%;
+    background: repeating-radial-gradient(circle, transparent 0 4.4rem, rgba(123, 189, 232, .25) 4.45rem 4.5rem);
+    pointer-events: none;
+}
+
+.radial-rings::after {
+    content: "";
+    position: absolute;
+    inset: 16%;
+    border: 1px solid rgba(78, 142, 162, .28);
+    border-radius: 50%;
+}
+
+.radial-rings--bottom-right {
+    bottom: -40%;
+    right: -12%;
+}
+
+.radial-rings--top-left {
+    top: -40%;
+    left: -12%;
+}
+
 .content-section {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -75,7 +106,7 @@
 
 @media (max-width: 991.98px) {
     .pb-chat-col {
-        padding-bottom: 5.5rem;
+        padding-bottom: 12.5rem;
     }
 
     .prompt-builder-page {
@@ -83,13 +114,13 @@
     }
 
     .pb-preview-col {
-        position: fixed;
+        position: absolute;
         left: 0;
         right: 0;
         bottom: 0;
         top: auto;
         z-index: 20;
-        max-height: 15vh;
+        max-height: 11.5rem;
         overflow: hidden;
         background: var(--base);
         border-top-left-radius: 1rem;
@@ -98,9 +129,24 @@
         transition: max-height .3s ease;
     }
 
+    .pb-preview-col::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 1.75rem;
+        background: linear-gradient(to top, var(--base), transparent);
+        pointer-events: none;
+    }
+
     .pb-preview-col--expanded {
         max-height: 80vh;
         overflow-y: auto;
+    }
+
+    .pb-preview-col--expanded::after {
+        content: none;
     }
 
     .pb-sheet-handle {

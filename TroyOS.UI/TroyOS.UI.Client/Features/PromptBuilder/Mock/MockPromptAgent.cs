@@ -66,4 +66,5 @@ public static class MockPromptAgent
     /// answered. For now this always returns null and every slot is asked individually.
     /// </summary>
     public static IReadOnlyDictionary<SlotType, string>? TryParseMultiSlotAnswer(string message) => null;
+
 }

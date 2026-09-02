@@ -45,75 +45,36 @@
         </div>
     </section>
 
-    <section id="how-it-works" class="pb-explore container-fluid px-4 px-lg-5" aria-label="Framework and process overview">
-        <button type="button" class="pb-explore-nav pb-explore-nav--start" aria-label="Previous">
-            <i class="bi bi-chevron-left" aria-hidden="true"></i>
-        </button>
+    <section id="how-it-works" class="pb-explore container-fluid px-4 px-lg-5" aria-label="RACE framework overview">
+        <article class="pb-explore-card pb-race-card">
+            <header class="pb-explore-card-header pb-explore-card-header--center">
+                <h2>The RACE Framework</h2>
+                <p class="pb-explore-card-subtitle">Follow 4 simple steps. I'll build your prompt as we go.</p>
+            </header>
 
-        <div class="row g-4 pb-explore-row">
-            <div class="col-lg-6">
-                <article class="pb-explore-card">
-                    <header class="pb-explore-card-header">
-                        <h2><i class="bi bi-gem" aria-hidden="true"></i> The RACE Framework</h2>
-                        <a class="pb-learn-more" href="#">Learn more <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
-                    </header>
-                    <p class="pb-explore-card-subtitle">A simple framework to structure powerful prompts.</p>
-
-                    <div class="row row-cols-2 row-cols-md-4 g-3 pb-race-grid">
-                        @foreach (var item in RaceItems)
-                        {
-                            <div class="col">
-                                <div class="pb-race-item">
-                                    <span class="pb-race-badge" style="background:@item.Color">@item.Letter</span>
-                                    <i class="bi @item.Icon pb-race-icon" style="color:@item.Color" aria-hidden="true"></i>
-                                    <h3>@item.Title</h3>
-                                    <p>@item.Description</p>
-                                </div>
+            <div class="pb-race-grid">
+                @for (var i = 0; i < RaceItems.Count; i++)
+                {
+                    var item = RaceItems[i];
+                    <div class="pb-race-item pb-race-item--@(i + 1)" style="--race-color:@item.Color;--race-glow:@(item.Color)40">
+                        <span class="pb-race-step-badge">STEP @(i + 1)</span>
+                        <div class="pb-race-item-header">
+                            <span class="pb-race-badge" style="background:@item.Color">@item.Letter</span>
+                            <div class="pb-race-item-title">
+                                <h3>@item.Title</h3>
+                                <a class="pb-learn-more" href="#">How it works</a>
                             </div>
-                        }
+                        </div>
+                        <p>@item.Description</p>
+                        <div class="pb-race-example">@item.Example</div>
                     </div>
-
-                    <div class="pb-carousel-dots" aria-hidden="true">
-                        <span class="active"></span><span></span><span></span><span></span><span></span>
-                    </div>
-                </article>
+                    if (i < RaceItems.Count - 1)
+                    {
+                        <span class="pb-race-arrow" aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+                    }
+                }
             </div>
-
-            <div class="col-lg-6">
-                <article class="pb-explore-card">
-                    <header class="pb-explore-card-header">
-                        <h2><i class="bi bi-gear" aria-hidden="true"></i> How It Works</h2>
-                        <a class="pb-learn-more" href="#">Learn more <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
-                    </header>
-                    <p class="pb-explore-card-subtitle">Four simple steps from idea to impactful prompt.</p>
-
-                    <div class="pb-how-steps">
-                        @for (var i = 0; i < Steps.Count; i++)
-                        {
-                            var step = Steps[i];
-                            <div class="pb-how-step">
-                                <span class="pb-how-number">@step.Number</span>
-                                <span class="pb-how-icon-box"><i class="bi @step.Icon" aria-hidden="true"></i></span>
-                                <h3>@step.Title</h3>
-                                <p>@step.Description</p>
-                            </div>
-                            if (i < Steps.Count - 1)
-                            {
-                                <span class="pb-how-arrow" aria-hidden="true"><i class="bi bi-arrow-right"></i></span>
-                            }
-                        }
-                    </div>
-
-                    <div class="pb-carousel-dots" aria-hidden="true">
-                        <span class="active"></span><span></span><span></span><span></span><span></span>
-                    </div>
-                </article>
-            </div>
-        </div>
-
-        <button type="button" class="pb-explore-nav pb-explore-nav--end" aria-label="Next">
-            <i class="bi bi-chevron-right" aria-hidden="true"></i>
-        </button>
+        </article>
     </section>
 
     <section class="pb-privacy-bar container-fluid px-4 px-lg-5">
@@ -134,8 +95,7 @@
 
 @code {
     private sealed record FeaturePill(string Icon, string Label);
-    private sealed record RaceItem(string Letter, string Icon, string Color, string Title, string Description);
-    private sealed record HowStep(string Number, string Icon, string Title, string Description);
+    private sealed record RaceItem(string Letter, string Color, string Title, string Description, string Example);
 
     private static readonly IReadOnlyList<FeaturePill> FeaturePills =
     [
@@ -147,17 +107,9 @@
 
     private static readonly IReadOnlyList<RaceItem> RaceItems =
     [
-        new("R", "bi-person-fill", "#2f6fed", "Role", "Define the AI's role and expertise."),
-        new("A", "bi-bullseye", "#0fb37d", "Action", "Clearly state what you want to achieve."),
-        new("C", "bi-file-earmark-text-fill", "#7c3aed", "Context", "Add relevant context and background."),
-        new("E", "bi-chat-square-text-fill", "#f59e0b", "Expectations", "Specify the output format and tone.")
-    ];
-
-    private static readonly IReadOnlyList<HowStep> Steps =
-    [
-        new("1", "bi-pencil-fill", "Describe Your Goal", "Tell me what you want to accomplish."),
-        new("2", "bi-patch-question-fill", "Answer Smart Questions", "I'll ask a few questions to get the right context."),
-        new("3", "bi-stars", "Build Your Prompt", "I'll craft a high-quality prompt tailored to your goal."),
-        new("4", "bi-check2-square", "Use & Improve", "Copy it, use it with any AI, and refine as needed.")
+        new("R", "#2f6fed", "Role", "Define the AI's role and expertise. This sets the foundation for high-quality output.", "Who should the AI act as?"),
+        new("A", "#0fb37d", "Action", "Clearly state what you want the AI to do. Be specific about the task or outcome.", "What do you want the AI to do?"),
+        new("C", "#7c3aed", "Context", "Add relevant background information, details, and constraints. The more context, the better the result.", "What context or details should the AI know?"),
+        new("E", "#f59e0b", "Expectation", "Specify the output format, tone, length, and any must-have requirements.", "How should the output look and feel?")
     ];
 }
