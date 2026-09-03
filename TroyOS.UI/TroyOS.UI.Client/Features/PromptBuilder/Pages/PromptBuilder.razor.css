@@ -6,6 +6,7 @@
     overflow: hidden;
 }
 
+
 .radial-rings {
     position: absolute;
     width: min(70vw, 48rem);
@@ -84,6 +85,32 @@
     text-decoration: underline;
     text-align: center;
     cursor: pointer;
+}
+
+.pb-build-loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    min-height: 2rem;
+    color: var(--mid-blue);
+    font-size: .72rem;
+    font-weight: 700;
+}
+
+.pb-build-loader-spinner {
+    width: .85rem;
+    height: .85rem;
+    border: 2px solid rgba(78, 142, 162, .25);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: pb-spin .7s linear infinite;
+}
+
+@keyframes pb-spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .pb-build-now-link:hover {
@@ -169,6 +196,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+    .pb-build-loader-spinner {
+        animation: none;
+    }
+
     .pb-preview-col {
         transition: none;
     }

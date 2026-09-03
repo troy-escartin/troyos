@@ -212,3 +212,13 @@
         gap: .5rem;
     }
 }
+
+.pb-refinement-error {
+    margin: 0 0 .75rem;
+    padding: .65rem .8rem;
+    color: #8a1c1c;
+    background: rgba(255, 229, 229, .72);
+    border: 1px solid rgba(138, 28, 28, .2);
+    border-radius: .45rem;
+    font-size: .72rem;
+}

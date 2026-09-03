@@ -23,9 +23,6 @@
             <a class="btn btn-outline-dark pb-result-action" href="@DownloadHref" download="troy-prompt.txt">
                 <i class="bi bi-download" aria-hidden="true"></i> Download
             </a>
-            <button type="button" class="btn btn-outline-dark pb-result-action" @onclick="() => OnRefinePrompt.InvokeAsync()">
-                <i class="bi bi-arrow-repeat" aria-hidden="true"></i> Refine Prompt
-            </button>
         </div>
     </section>
 
@@ -34,7 +31,11 @@
             <h2 id="pb-prompt-heading">Your Prompt</h2>
             <span class="pb-recommended-badge">Recommended for: ChatGPT, Claude, Gemini</span>
         </div>
-        <pre class="pb-result-code"><code>@AssembledPrompt</code></pre>
+        @if (!string.IsNullOrWhiteSpace(RefinementError))
+        {
+            <p class="pb-refinement-error" role="alert">@RefinementError</p>
+        }
+        <pre class="pb-result-code"><code>@(ImprovedPrompt ?? AssembledPrompt)</code></pre>
         <details class="pb-why-prompt">
             <summary>Why this prompt works</summary>
             <p>It provides clear context, structure, and expectations to get high-quality, relevant results.</p>
@@ -52,24 +53,27 @@
 
 @code {
     [Parameter, EditorRequired] public string AssembledPrompt { get; set; } = string.Empty;
+    [Parameter] public string? ImprovedPrompt { get; set; }
+    [Parameter] public string? RefinementError { get; set; }
     [Parameter] public EventCallback OnBackToChat { get; set; }
     [Parameter] public EventCallback OnStartOver { get; set; }
-    [Parameter] public EventCallback OnRefinePrompt { get; set; }
     [Parameter] public IJSObjectReference? JsModule { get; set; }
 
     private bool _copySucceeded;
 
+    private string DisplayedPrompt => ImprovedPrompt ?? AssembledPrompt;
+
     private string DownloadHref =>
-        $"data:text/plain;charset=utf-8,{Uri.EscapeDataString(AssembledPrompt)}";
+        $"data:text/plain;charset=utf-8,{Uri.EscapeDataString(DisplayedPrompt)}";
 
     private async Task CopyAsync()
     {
-        if (JsModule is null || string.IsNullOrWhiteSpace(AssembledPrompt))
+        if (JsModule is null || string.IsNullOrWhiteSpace(DisplayedPrompt))
         {
             return;
         }
 
-        _copySucceeded = await JsModule.InvokeAsync<bool>("copyText", AssembledPrompt);
+        _copySucceeded = await JsModule.InvokeAsync<bool>("copyText", DisplayedPrompt);
         if (_copySucceeded)
         {
             StateHasChanged();

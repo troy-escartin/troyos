@@ -16,7 +16,8 @@
         <CompletedPrompt AssembledPrompt="@AssembledPrompt"
                          OnBackToChat="ReturnToChat"
                          OnStartOver="StartOver"
-                         OnRefinePrompt="ReturnToChat"
+                         ImprovedPrompt="@_improvedPrompt"
+                         RefinementError="@_refinementError"
                          JsModule="@_jsModule" />
     }
     else
@@ -34,6 +35,14 @@
                                  ActiveMessageId="ActiveMessageId"
                                  OnChipClick="HandleChipClick"
                                  OnSkipClick="HandleSkip" />
+
+                @if (_isThinking)
+                {
+                    <div class="pb-build-loader" role="status" aria-live="polite">
+                        <span class="pb-build-loader-spinner" aria-hidden="true"></span>
+                        <span>Building your prompt...</span>
+                    </div>
+                }
 
                 <Composer @ref="_composerRef"
                           Value="@_composerText"
@@ -80,6 +89,8 @@
     private string? _validationMessage;
     private bool _previewExpanded;
     private bool _showResult;
+    private string? _improvedPrompt;
+    private string? _refinementError;
 
     private IJSObjectReference? _jsModule;
     private ChatTranscript? _transcriptRef;
@@ -298,7 +309,7 @@
         var next = GetNextUnansweredSlot();
         if (next is null)
         {
-            CompleteConversation();
+            await CompleteConversationAsync();
             return;
         }
 
@@ -332,7 +343,7 @@
         StateHasChanged();
     }
 
-    private void CompleteConversation()
+    private async Task CompleteConversationAsync()
     {
         _messages.Add(new ChatMessage
         {
@@ -340,10 +351,38 @@
             Text = "Your prompt is ready! Review it in the preview panel, or click any field there to fine-tune it."
         });
         _currentSlot = null;
+        _improvedPrompt = null;
+        _refinementError = null;
         _showResult = true;
+        StateHasChanged();
+        await RefinePromptAsync();
     }
 
-    private void BuildNow()
+    private async Task RefinePromptAsync()
+    {
+        if (string.IsNullOrWhiteSpace(AssembledPrompt))
+        {
+            return;
+        }
+
+        _refinementError = null;
+
+        try
+        {
+            if (_jsModule is null)
+            {
+                throw new JSException("Gemini refinement is not ready yet. Please try again.");
+            }
+
+            _improvedPrompt = await _jsModule.InvokeAsync<string>("refinePrompt", AssembledPrompt);
+        }
+        catch (JSException exception)
+        {
+            _refinementError = exception.Message;
+        }
+    }
+
+    private async Task BuildNow()
     {
         foreach (var def in PromptConversationScript.Slots)
         {
@@ -359,12 +398,14 @@
         _isReEditing = false;
         _currentSlot = null;
         ClearValidationError();
-        CompleteConversation();
+        await CompleteConversationAsync();
     }
 
     private async Task HandleEditSlot(SlotType slot)
     {
         _showResult = false;
+        _improvedPrompt = null;
+        _refinementError = null;
         var def = GetDefinition(slot);
         _messages.Add(new ChatMessage
         {
@@ -416,6 +457,8 @@
         _composerText = string.Empty;
         _isThinking = false;
         _isReEditing = false;
+        _improvedPrompt = null;
+        _refinementError = null;
         _showResult = false;
         ClearValidationError();
         AddAssistantQuestion(SlotType.Role);
