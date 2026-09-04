@@ -8,7 +8,7 @@
 
 <PageTitle>Prompt Builder | Troy.OS</PageTitle>
 
-<main class="prompt-builder-page">
+<main class="prompt-builder-page @(_showResult ? "prompt-builder-page--result" : string.Empty)">
     <div class="radial-rings radial-rings--bottom-right" aria-hidden="true"></div>
     <div class="radial-rings radial-rings--top-left" aria-hidden="true"></div>
     @if (_showResult)
@@ -18,6 +18,7 @@
                          OnStartOver="StartOver"
                          ImprovedPrompt="@_improvedPrompt"
                          RefinementError="@_refinementError"
+                         IsRefining="@_isRefining"
                          JsModule="@_jsModule" />
     }
     else
@@ -89,8 +90,10 @@
     private string? _validationMessage;
     private bool _previewExpanded;
     private bool _showResult;
+    private bool _isRefining;
     private string? _improvedPrompt;
     private string? _refinementError;
+    private int _refinementRequestId;
 
     private IJSObjectReference? _jsModule;
     private ChatTranscript? _transcriptRef;
@@ -264,6 +267,8 @@
         var slot = _currentSlot!.Value;
         var inferred = MockPromptAgent.InferredValue(slot);
 
+        Console.WriteLine($"Prompt Builder: Skip used for {slot}. Inferred value: '{inferred}'");
+
         _messages.Add(new ChatMessage { Sender = ChatSender.User, Text = "Skip" });
         _slots[slot].Value = inferred;
         _slots[slot].IsAssumption = true;
@@ -275,6 +280,8 @@
 
     private async Task SubmitAnswerAsync(SlotType slot, string text)
     {
+        Console.WriteLine($"Prompt Builder: User value used for {slot}. Value: '{text}'");
+
         _messages.Add(new ChatMessage { Sender = ChatSender.User, Text = text });
         _slots[slot].Value = text;
         _slots[slot].IsAssumption = false;
@@ -353,19 +360,24 @@
         _currentSlot = null;
         _improvedPrompt = null;
         _refinementError = null;
+        _isRefining = true;
+        var requestId = ++_refinementRequestId;
         _showResult = true;
         StateHasChanged();
-        await RefinePromptAsync();
+        await RefinePromptAsync(requestId);
     }
 
-    private async Task RefinePromptAsync()
+    private async Task RefinePromptAsync(int requestId)
     {
         if (string.IsNullOrWhiteSpace(AssembledPrompt))
         {
+            _isRefining = false;
             return;
         }
 
         _refinementError = null;
+
+        Console.WriteLine($"Prompt Builder: Prompt sent to Gemini:\n{AssembledPrompt}");
 
         try
         {
@@ -374,11 +386,29 @@
                 throw new JSException("Gemini refinement is not ready yet. Please try again.");
             }
 
-            _improvedPrompt = await _jsModule.InvokeAsync<string>("refinePrompt", AssembledPrompt);
+            string? improvedPrompt = await _jsModule.InvokeAsync<string>("refinePrompt", AssembledPrompt);
+            Console.WriteLine($"Prompt Builder: Gemini returned:\n{improvedPrompt}");
+            _improvedPrompt = improvedPrompt;
+            @* if (requestId == _refinementRequestId && _showResult)
+            {
+                _improvedPrompt = improvedPrompt;
+            } *@
         }
         catch (JSException exception)
         {
+            Console.WriteLine($"Prompt Builder: Gemini failed: {exception.Message}");
             _refinementError = exception.Message;
+            @* if (requestId == _refinementRequestId && _showResult)
+            {
+                _refinementError = exception.Message;
+            } *@
+        }
+        finally
+        { _isRefining = false;
+            @* if (requestId == _refinementRequestId)
+            {
+                _isRefining = false;
+            } *@
         }
     }
 
@@ -403,7 +433,9 @@
 
     private async Task HandleEditSlot(SlotType slot)
     {
+        _refinementRequestId++;
         _showResult = false;
+        _isRefining = false;
         _improvedPrompt = null;
         _refinementError = null;
         var def = GetDefinition(slot);
@@ -441,12 +473,15 @@
 
     private void ReturnToChat()
     {
+        _refinementRequestId++;
         _showResult = false;
+        _isRefining = false;
         StateHasChanged();
     }
 
     private void StartOver()
     {
+        _refinementRequestId++;
         _messages.Clear();
         foreach (var def in PromptConversationScript.Slots)
         {
@@ -457,6 +492,7 @@
         _composerText = string.Empty;
         _isThinking = false;
         _isReEditing = false;
+        _isRefining = false;
         _improvedPrompt = null;
         _refinementError = null;
         _showResult = false;

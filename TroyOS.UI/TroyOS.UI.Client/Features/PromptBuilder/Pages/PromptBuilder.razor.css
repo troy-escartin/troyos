@@ -6,6 +6,13 @@
     overflow: hidden;
 }
 
+.prompt-builder-page--result {
+    height: auto;
+    min-height: calc(100dvh - 4.25rem);
+    overflow: visible;
+    padding-bottom: 1rem;
+}
+
 
 .radial-rings {
     position: absolute;
@@ -138,6 +145,11 @@
 
     .prompt-builder-page {
         height: calc(100dvh - 3.75rem);
+    }
+
+    .prompt-builder-page--result {
+        height: auto;
+        min-height: calc(100dvh - 3.75rem);
     }
 
     .pb-preview-col {

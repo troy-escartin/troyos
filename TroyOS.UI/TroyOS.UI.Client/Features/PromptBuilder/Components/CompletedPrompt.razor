@@ -35,7 +35,16 @@
         {
             <p class="pb-refinement-error" role="alert">@RefinementError</p>
         }
-        <pre class="pb-result-code"><code>@(ImprovedPrompt ?? AssembledPrompt)</code></pre>
+        <div class="pb-result-code-container">
+            <pre class="pb-result-code"><code>@(ImprovedPrompt ?? AssembledPrompt)</code></pre>
+            @if (IsRefining)
+            {
+                <div class="pb-result-code-loader" role="status" aria-live="polite">
+                    <span class="pb-result-loading-spinner" aria-hidden="true"></span>
+                    <span>Generating your improved prompt...</span>
+                </div>
+            }
+        </div>
         <details class="pb-why-prompt">
             <summary>Why this prompt works</summary>
             <p>It provides clear context, structure, and expectations to get high-quality, relevant results.</p>
@@ -55,6 +64,7 @@
     [Parameter, EditorRequired] public string AssembledPrompt { get; set; } = string.Empty;
     [Parameter] public string? ImprovedPrompt { get; set; }
     [Parameter] public string? RefinementError { get; set; }
+    [Parameter] public bool IsRefining { get; set; }
     [Parameter] public EventCallback OnBackToChat { get; set; }
     [Parameter] public EventCallback OnStartOver { get; set; }
     [Parameter] public IJSObjectReference? JsModule { get; set; }
