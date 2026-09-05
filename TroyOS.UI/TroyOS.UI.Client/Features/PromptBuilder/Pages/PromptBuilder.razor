@@ -3,7 +3,9 @@
 @using TroyOS.UI.Client.Features.PromptBuilder.Components
 @using TroyOS.UI.Client.Features.PromptBuilder.Mock
 @using TroyOS.UI.Client.Features.PromptBuilder.Models
+@using TroyOS.UI.Client.Features.PromptBuilder.Services
 @inject IJSRuntime JS
+@inject IPromptRefinementService PromptRefinementService
 @implements IAsyncDisposable
 
 <PageTitle>Prompt Builder | Troy.OS</PageTitle>
@@ -94,6 +96,7 @@
     private string? _improvedPrompt;
     private string? _refinementError;
     private int _refinementRequestId;
+    private CancellationTokenSource? _refinementCancellation;
 
     private IJSObjectReference? _jsModule;
     private ChatTranscript? _transcriptRef;
@@ -362,12 +365,15 @@
         _refinementError = null;
         _isRefining = true;
         var requestId = ++_refinementRequestId;
+        _refinementCancellation?.Cancel();
+        _refinementCancellation?.Dispose();
+        _refinementCancellation = new CancellationTokenSource();
         _showResult = true;
         StateHasChanged();
-        await RefinePromptAsync(requestId);
+        await RefinePromptAsync(requestId, _refinementCancellation.Token);
     }
 
-    private async Task RefinePromptAsync(int requestId)
+    private async Task RefinePromptAsync(int requestId, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(AssembledPrompt))
         {
@@ -377,38 +383,27 @@
 
         _refinementError = null;
 
-        Console.WriteLine($"Prompt Builder: Prompt sent to Gemini:\n{AssembledPrompt}");
-
         try
         {
-            if (_jsModule is null)
-            {
-                throw new JSException("Gemini refinement is not ready yet. Please try again.");
-            }
-
-            string? improvedPrompt = await _jsModule.InvokeAsync<string>("refinePrompt", AssembledPrompt);
-            Console.WriteLine($"Prompt Builder: Gemini returned:\n{improvedPrompt}");
-            _improvedPrompt = improvedPrompt;
-            @* if (requestId == _refinementRequestId && _showResult)
+            var improvedPrompt = await PromptRefinementService.ImprovePromptAsync(AssembledPrompt, cancellationToken);
+            if (requestId == _refinementRequestId && _showResult)
             {
                 _improvedPrompt = improvedPrompt;
-            } *@
+            }
         }
-        catch (JSException exception)
+        catch (PromptRefinementException exception) when (requestId == _refinementRequestId)
         {
-            Console.WriteLine($"Prompt Builder: Gemini failed: {exception.Message}");
             _refinementError = exception.Message;
-            @* if (requestId == _refinementRequestId && _showResult)
-            {
-                _refinementError = exception.Message;
-            } *@
+        }
+        catch (OperationCanceledException) when (requestId != _refinementRequestId || !_showResult)
+        {
         }
         finally
-        { _isRefining = false;
-            @* if (requestId == _refinementRequestId)
+        {
+            if (requestId == _refinementRequestId)
             {
                 _isRefining = false;
-            } *@
+            }
         }
     }
 
@@ -433,6 +428,7 @@
 
     private async Task HandleEditSlot(SlotType slot)
     {
+        CancelRefinement();
         _refinementRequestId++;
         _showResult = false;
         _isRefining = false;
@@ -473,6 +469,7 @@
 
     private void ReturnToChat()
     {
+        CancelRefinement();
         _refinementRequestId++;
         _showResult = false;
         _isRefining = false;
@@ -481,6 +478,7 @@
 
     private void StartOver()
     {
+        CancelRefinement();
         _refinementRequestId++;
         _messages.Clear();
         foreach (var def in PromptConversationScript.Slots)
@@ -502,6 +500,7 @@
 
     public async ValueTask DisposeAsync()
     {
+        CancelRefinement();
         if (_jsModule is not null)
         {
             try
@@ -513,5 +512,12 @@
                 // Circuit already torn down; nothing further to clean up.
             }
         }
+    }
+
+    private void CancelRefinement()
+    {
+        _refinementCancellation?.Cancel();
+        _refinementCancellation?.Dispose();
+        _refinementCancellation = null;
     }
 }

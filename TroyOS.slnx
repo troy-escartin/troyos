@@ -3,4 +3,5 @@
     <File Path=".github/workflows/dotnet.yml" />
   </Folder>
   <Project Path="TroyOS.UI/TroyOS.UI.Client/TroyOS.UI.Client.csproj" Id="cff999e5-845d-47c4-b333-c51fb2474e52" />
+  <Project Path="TroyOS.Api/TroyOS.Api.csproj" />
 </Solution>

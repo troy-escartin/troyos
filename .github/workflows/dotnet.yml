@@ -57,7 +57,32 @@ jobs:
 
       - name: Publish Blazor WebAssembly client
         if: github.event_name == 'push'
+        env:
+          TROYOS_API_BASE_URL: ${{ secrets.TROYOS_API_BASE_URL }}
         run: dotnet publish TroyOS.UI/TroyOS.UI.Client/TroyOS.UI.Client.csproj --configuration Release --no-restore --output ./publish
+
+      - name: Configure production API URL
+        if: github.event_name == 'push'
+        shell: bash
+        env:
+          TROYOS_API_BASE_URL: ${{ secrets.TROYOS_API_BASE_URL }}
+        run: |
+          if [ -z "$TROYOS_API_BASE_URL" ]; then
+            echo "TROYOS_API_BASE_URL must be configured as a repository secret."
+            exit 1
+          fi
+          python -c "import json, os, pathlib; path = pathlib.Path('publish/wwwroot/appsettings.json'); data = json.loads(path.read_text()); data['ApiBaseUrl'] = os.environ['TROYOS_API_BASE_URL'].rstrip('/') + '/'; path.write_text(json.dumps(data, indent=2) + '\\n')"
+
+      - name: Publish Minimal API
+        if: github.event_name == 'push'
+        run: dotnet publish TroyOS.Api/TroyOS.Api.csproj --configuration Release --no-restore --output ./publish-api
+
+      - name: Upload Minimal API deployment package
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: troyos-api-publish
+          path: ./publish-api
 
       - name: Deploy to Cloudflare Pages
         if: github.event_name == 'push'
