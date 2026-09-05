@@ -4,7 +4,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using TroyOS.Api;
 
@@ -78,6 +77,28 @@ builder.Services.AddSingleton(TimeProvider.System);
 var app = builder.Build();
 
 app.UseForwardedHeaders();
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path.StartsWithSegments("/api/prompt/improve"))
+    {
+        var maximumRequestBytes = Math.Max(1, promptOptions.MaximumRequestBytes);
+        var maxRequestBodySizeFeature = context.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpMaxRequestBodySizeFeature>();
+        if (maxRequestBodySizeFeature is { IsReadOnly: false })
+        {
+            maxRequestBodySizeFeature.MaxRequestBodySize = maximumRequestBytes;
+        }
+
+        if (context.Request.ContentLength > maximumRequestBytes)
+        {
+            context.Response.StatusCode = StatusCodes.Status413PayloadTooLarge;
+            await context.Response.WriteAsJsonAsync(
+                new ApiErrorResponse("The request body is too large.", "request_too_large"));
+            return;
+        }
+    }
+
+    await next();
+});
 app.UseExceptionHandler(errorApp => errorApp.Run(async context =>
 {
     var traceId = context.TraceIdentifier;
@@ -177,7 +198,6 @@ app.MapPost("/api/prompt/improve", async (
     }
 })
     .RequireRateLimiting("PromptImprovement")
-    .WithMetadata(new RequestSizeLimitAttribute(promptOptions.MaximumRequestBytes))
     .WithName("ImprovePrompt");
 
 app.Run();
