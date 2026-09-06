@@ -1,0 +1,41 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "coreclr",
+            "request": "launch",
+            "name": "Debug TroyOS API",
+            "program": "${workspaceFolder}/TroyOS.Api/bin/Debug/net10.0/TroyOS.Api.dll",
+            "cwd": "${workspaceFolder}/TroyOS.Api",
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "https://localhost:7295"
+            },
+            "preLaunchTask": "Build TroyOS API",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
+        {
+            "type": "blazorwasm",
+            "request": "launch",
+            "name": "Debug TroyOS Client",
+            "url": "http://localhost:5195",
+            "webRoot": "${workspaceFolder}/TroyOS.UI/TroyOS.UI.Client",
+            "program": "${workspaceFolder}/TroyOS.UI/TroyOS.UI.Client/bin/Debug/net10.0/TroyOS.UI.Client.dll",
+            "browser": "edge",
+            "timeout": 30000,
+            "preLaunchTask": "Run TroyOS Client",
+            "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Debug TroyOS (API + Client)",
+            "configurations": [
+                "Debug TroyOS API",
+                "Debug TroyOS Client"
+            ],
+            "stopAll": true
+        }
+    ]
+}

@@ -10,7 +10,9 @@
 *.sln.docstates
 
 # Visual Studio Code
-.vscode/
+.vscode/*
+!.vscode/
+!.vscode/launch.json
 
 # Rider / ReSharper
 .idea/

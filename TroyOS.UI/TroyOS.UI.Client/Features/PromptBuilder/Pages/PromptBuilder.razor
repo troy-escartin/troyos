@@ -1,0 +1,523 @@
+@page "/prompt-builder/build"
+@using Microsoft.JSInterop
+@using TroyOS.UI.Client.Features.PromptBuilder.Components
+@using TroyOS.UI.Client.Features.PromptBuilder.Mock
+@using TroyOS.UI.Client.Features.PromptBuilder.Models
+@using TroyOS.UI.Client.Features.PromptBuilder.Services
+@inject IJSRuntime JS
+@inject IPromptRefinementService PromptRefinementService
+@implements IAsyncDisposable
+
+<PageTitle>Prompt Builder | Troy.OS</PageTitle>
+
+<main class="prompt-builder-page @(_showResult ? "prompt-builder-page--result" : string.Empty)">
+    <div class="radial-rings radial-rings--bottom-right" aria-hidden="true"></div>
+    <div class="radial-rings radial-rings--top-left" aria-hidden="true"></div>
+    @if (_showResult)
+    {
+        <CompletedPrompt AssembledPrompt="@AssembledPrompt"
+                         OnBackToChat="ReturnToChat"
+                         OnStartOver="StartOver"
+                         ImprovedPrompt="@_improvedPrompt"
+                         RefinementError="@_refinementError"
+                         IsRefining="@_isRefining"
+                         JsModule="@_jsModule" />
+    }
+    else
+    {
+    <section class="content-section container-fluid px-4 px-lg-5" aria-labelledby="pb-heading">
+        <header class="pb-page-header d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <h1 id="pb-heading" class="pb-page-title">Prompt Builder</h1>
+            <StepIndicator Slots="_slots" CurrentSlot="_currentSlot" />
+        </header>
+
+        <div class="row g-4 pb-layout">
+            <div class="col-12 col-lg-8 pb-chat-col">
+                <ChatTranscript @ref="_transcriptRef"
+                                 Messages="_messages"
+                                 ActiveMessageId="ActiveMessageId"
+                                 OnChipClick="HandleChipClick"
+                                 OnSkipClick="HandleSkip" />
+
+                @if (_isThinking)
+                {
+                    <div class="pb-build-loader" role="status" aria-live="polite">
+                        <span class="pb-build-loader-spinner" aria-hidden="true"></span>
+                        <span>Building your prompt...</span>
+                    </div>
+                }
+
+                <Composer @ref="_composerRef"
+                          Value="@_composerText"
+                          ValueChanged="v => _composerText = v"
+                          OnSend="HandleSend"
+                          IsDisabled="_isThinking || _currentSlot is null"
+                          HasValidationError="_validationError"
+                          ValidationMessage="_validationMessage"
+                          Placeholder="@ComposerPlaceholder"
+                          JsModule="_jsModule" />
+
+                <button type="button" class="pb-build-now-link" @onclick="BuildNow">
+                    Build it now, fill the rest for me
+                </button>
+            </div>
+
+            <div class="col-12 col-lg-4 pb-preview-col @(_previewExpanded ? "pb-preview-col--expanded" : string.Empty)">
+                <button type="button" class="pb-sheet-handle d-lg-none" aria-expanded="@_previewExpanded"
+                        aria-controls="pb-preview-panel" @onclick="TogglePreviewExpanded">
+                    <span class="pb-sheet-grip" aria-hidden="true"></span>
+                    <span class="visually-hidden">@(_previewExpanded ? "Collapse" : "Expand") prompt preview</span>
+                </button>
+                <div id="pb-preview-panel">
+                    <PreviewPanel Slots="_slots"
+                                  EditingSlot="_isReEditing ? _currentSlot : null"
+                                  AssembledPrompt="AssembledPrompt"
+                                  OnEditSlot="HandleEditSlot"
+                                  JsModule="_jsModule" />
+                </div>
+            </div>
+        </div>
+    </section>
+    }
+</main>
+
+@code {
+    private readonly List<ChatMessage> _messages = [];
+    private readonly PromptSlots _slots = new();
+    private SlotType? _currentSlot;
+    private bool _isReEditing;
+    private bool _isThinking;
+    private string _composerText = string.Empty;
+    private bool _validationError;
+    private string? _validationMessage;
+    private bool _previewExpanded;
+    private bool _showResult;
+    private bool _isRefining;
+    private string? _improvedPrompt;
+    private string? _refinementError;
+    private int _refinementRequestId;
+    private CancellationTokenSource? _refinementCancellation;
+
+    private IJSObjectReference? _jsModule;
+    private ChatTranscript? _transcriptRef;
+    private Composer? _composerRef;
+    private int _lastScrolledCount;
+
+    private Guid? ActiveMessageId =>
+        _messages.LastOrDefault(m => m.Sender == ChatSender.Assistant && !m.IsThinkingIndicator)?.Id;
+
+    private string ComposerPlaceholder =>
+        _currentSlot is null ? "All set! Click a field on the right to make changes." : "Type your answer...";
+
+    private string AssembledPrompt
+    {
+        get
+        {
+            var lines = new List<string>();
+
+            if (_slots[SlotType.Role].IsAnswered)
+            {
+                lines.Add($"You are {_slots[SlotType.Role].Value}.");
+            }
+
+            if (_slots[SlotType.Action].IsAnswered)
+            {
+                if (lines.Count > 0) lines.Add(string.Empty);
+                lines.Add(_slots[SlotType.Action].Value!);
+            }
+
+            if (_slots[SlotType.Context].IsAnswered)
+            {
+                if (lines.Count > 0) lines.Add(string.Empty);
+                lines.Add($"Context: {_slots[SlotType.Context].Value}");
+            }
+
+            if (_slots[SlotType.Expectation].IsAnswered)
+            {
+                if (lines.Count > 0) lines.Add(string.Empty);
+                lines.Add($"Expected output: {_slots[SlotType.Expectation].Value}");
+            }
+
+            return string.Join('\n', lines);
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        AddAssistantQuestion(SlotType.Role);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _jsModule = await JS.InvokeAsync<IJSObjectReference>("import", "./js/promptBuilder.js");
+            StateHasChanged();
+            return;
+        }
+
+        if (_jsModule is not null && _transcriptRef is not null && _messages.Count != _lastScrolledCount)
+        {
+            _lastScrolledCount = _messages.Count;
+            await _jsModule.InvokeVoidAsync("scrollToBottom", _transcriptRef.ContainerRef);
+        }
+    }
+
+    private static SlotDefinition GetDefinition(SlotType slot) =>
+        PromptConversationScript.Slots.First(d => d.Type == slot);
+
+    private void AddAssistantQuestion(SlotType slot)
+    {
+        var def = GetDefinition(slot);
+        _messages.Add(new ChatMessage
+        {
+            Sender = ChatSender.Assistant,
+            Text = def.Question,
+            HelperText = def.Helper,
+            Chips = def.Chips,
+            SkipSlot = def.IsRequired ? null : slot
+        });
+        _currentSlot = slot;
+    }
+
+    private async Task HandleSend()
+    {
+        var text = _composerText.Trim();
+
+        if (_currentSlot is null)
+        {
+            return;
+        }
+
+        var slot = _currentSlot.Value;
+        var def = GetDefinition(slot);
+
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            if (def.IsRequired)
+            {
+                ShowValidationError($"{def.AriaLabel} is required. {def.Question}");
+                return;
+            }
+
+            await SkipCurrentSlotAsync();
+            return;
+        }
+
+        ClearValidationError();
+
+        // TODO: Before submitting to a single slot, run the message through a real parser to
+        // detect whether it already answers multiple slots at once (e.g. "I need a technical
+        // writer to draft release notes"). MockPromptAgent.TryParseMultiSlotAnswer is the seam
+        // for that logic; for now it always returns null so every slot is asked individually.
+        var multiSlotAnswers = MockPromptAgent.TryParseMultiSlotAnswer(text);
+        if (multiSlotAnswers is not null)
+        {
+            foreach (var (multiSlot, value) in multiSlotAnswers)
+            {
+                _slots[multiSlot].Value = value;
+                _slots[multiSlot].IsAssumption = false;
+            }
+        }
+
+        await SubmitAnswerAsync(slot, text);
+    }
+
+    private async Task HandleChipClick(ChipOption chip)
+    {
+        if (_currentSlot is null)
+        {
+            return;
+        }
+
+        var slot = _currentSlot.Value;
+
+        switch (chip.Kind)
+        {
+            case ChipKind.ShowSuggestions:
+                var suggestions = MockPromptAgent.GetSuggestions(slot, chip.Label);
+                _messages.Add(new ChatMessage
+                {
+                    Sender = ChatSender.Assistant,
+                    Text = $"Here are a few ideas for {GetDefinition(slot).AriaLabel.ToLowerInvariant()}:",
+                    Chips = suggestions.Select(s => new ChipOption(s, ChipKind.SelectValue, s)).ToList()
+                });
+                StateHasChanged();
+                break;
+
+            case ChipKind.SurpriseMe:
+                await SubmitAnswerAsync(slot, MockPromptAgent.SurpriseMeAnswer(slot));
+                break;
+
+            case ChipKind.SelectValue:
+                await SubmitAnswerAsync(slot, chip.Value ?? chip.Label);
+                break;
+        }
+    }
+
+    private async Task HandleSkip()
+    {
+        if (_currentSlot is null)
+        {
+            return;
+        }
+
+        await SkipCurrentSlotAsync();
+    }
+
+    private async Task SkipCurrentSlotAsync()
+    {
+        var slot = _currentSlot!.Value;
+        var inferred = MockPromptAgent.InferredValue(slot);
+
+        Console.WriteLine($"Prompt Builder: Skip used for {slot}. Inferred value: '{inferred}'");
+
+        _messages.Add(new ChatMessage { Sender = ChatSender.User, Text = "Skip" });
+        _slots[slot].Value = inferred;
+        _slots[slot].IsAssumption = true;
+        _composerText = string.Empty;
+        ClearValidationError();
+
+        await FinishTurnAsync();
+    }
+
+    private async Task SubmitAnswerAsync(SlotType slot, string text)
+    {
+        Console.WriteLine($"Prompt Builder: User value used for {slot}. Value: '{text}'");
+
+        _messages.Add(new ChatMessage { Sender = ChatSender.User, Text = text });
+        _slots[slot].Value = text;
+        _slots[slot].IsAssumption = false;
+        _composerText = string.Empty;
+        ClearValidationError();
+
+        await FinishTurnAsync();
+    }
+
+    private async Task FinishTurnAsync()
+    {
+        var wasReEditing = _isReEditing;
+        _isReEditing = false;
+        _currentSlot = null;
+        StateHasChanged();
+
+        if (wasReEditing)
+        {
+            _messages.Add(new ChatMessage
+            {
+                Sender = ChatSender.Assistant,
+                Text = "Updated! The preview now reflects your change."
+            });
+            return;
+        }
+
+        await AdvanceConversationAsync();
+    }
+
+    private async Task AdvanceConversationAsync()
+    {
+        var next = GetNextUnansweredSlot();
+        if (next is null)
+        {
+            await CompleteConversationAsync();
+            return;
+        }
+
+        await ShowThinkingThenAskAsync(next.Value);
+    }
+
+    private SlotType? GetNextUnansweredSlot()
+    {
+        foreach (var def in PromptConversationScript.Slots)
+        {
+            if (!_slots[def.Type].IsAnswered)
+            {
+                return def.Type;
+            }
+        }
+
+        return null;
+    }
+
+    private async Task ShowThinkingThenAskAsync(SlotType slot)
+    {
+        _isThinking = true;
+        _messages.Add(new ChatMessage { Sender = ChatSender.Assistant, Text = string.Empty, IsThinkingIndicator = true });
+        StateHasChanged();
+
+        await Task.Delay(600);
+
+        _messages.RemoveAll(m => m.IsThinkingIndicator);
+        _isThinking = false;
+        AddAssistantQuestion(slot);
+        StateHasChanged();
+    }
+
+    private async Task CompleteConversationAsync()
+    {
+        _messages.Add(new ChatMessage
+        {
+            Sender = ChatSender.Assistant,
+            Text = "Your prompt is ready! Review it in the preview panel, or click any field there to fine-tune it."
+        });
+        _currentSlot = null;
+        _improvedPrompt = null;
+        _refinementError = null;
+        _isRefining = true;
+        var requestId = ++_refinementRequestId;
+        _refinementCancellation?.Cancel();
+        _refinementCancellation?.Dispose();
+        _refinementCancellation = new CancellationTokenSource();
+        _showResult = true;
+        StateHasChanged();
+        await RefinePromptAsync(requestId, _refinementCancellation.Token);
+    }
+
+    private async Task RefinePromptAsync(int requestId, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(AssembledPrompt))
+        {
+            _isRefining = false;
+            return;
+        }
+
+        _refinementError = null;
+
+        try
+        {
+            var improvedPrompt = await PromptRefinementService.ImprovePromptAsync(AssembledPrompt, cancellationToken);
+            if (requestId == _refinementRequestId && _showResult)
+            {
+                _improvedPrompt = improvedPrompt;
+            }
+        }
+        catch (PromptRefinementException exception) when (requestId == _refinementRequestId)
+        {
+            _refinementError = exception.Message;
+        }
+        catch (OperationCanceledException) when (requestId != _refinementRequestId || !_showResult)
+        {
+        }
+        finally
+        {
+            if (requestId == _refinementRequestId)
+            {
+                _isRefining = false;
+            }
+        }
+    }
+
+    private async Task BuildNow()
+    {
+        foreach (var def in PromptConversationScript.Slots)
+        {
+            if (!_slots[def.Type].IsAnswered)
+            {
+                _slots[def.Type].Value = MockPromptAgent.InferredValue(def.Type);
+                _slots[def.Type].IsAssumption = true;
+            }
+        }
+
+        _messages.RemoveAll(m => m.IsThinkingIndicator);
+        _isThinking = false;
+        _isReEditing = false;
+        _currentSlot = null;
+        ClearValidationError();
+        await CompleteConversationAsync();
+    }
+
+    private async Task HandleEditSlot(SlotType slot)
+    {
+        CancelRefinement();
+        _refinementRequestId++;
+        _showResult = false;
+        _isRefining = false;
+        _improvedPrompt = null;
+        _refinementError = null;
+        var def = GetDefinition(slot);
+        _messages.Add(new ChatMessage
+        {
+            Sender = ChatSender.Assistant,
+            Text = $"Let's update this — {def.Question}",
+            HelperText = def.Helper,
+            Chips = def.Chips
+        });
+        _currentSlot = slot;
+        _isReEditing = true;
+        ClearValidationError();
+        StateHasChanged();
+
+        if (_composerRef is not null)
+        {
+            await _composerRef.FocusInputAsync();
+        }
+    }
+
+    private void TogglePreviewExpanded() => _previewExpanded = !_previewExpanded;
+
+    private void ShowValidationError(string message)
+    {
+        _validationError = true;
+        _validationMessage = message;
+    }
+
+    private void ClearValidationError()
+    {
+        _validationError = false;
+        _validationMessage = null;
+    }
+
+    private void ReturnToChat()
+    {
+        CancelRefinement();
+        _refinementRequestId++;
+        _showResult = false;
+        _isRefining = false;
+        StateHasChanged();
+    }
+
+    private void StartOver()
+    {
+        CancelRefinement();
+        _refinementRequestId++;
+        _messages.Clear();
+        foreach (var def in PromptConversationScript.Slots)
+        {
+            _slots[def.Type].Value = null;
+            _slots[def.Type].IsAssumption = false;
+        }
+
+        _composerText = string.Empty;
+        _isThinking = false;
+        _isReEditing = false;
+        _isRefining = false;
+        _improvedPrompt = null;
+        _refinementError = null;
+        _showResult = false;
+        ClearValidationError();
+        AddAssistantQuestion(SlotType.Role);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        CancelRefinement();
+        if (_jsModule is not null)
+        {
+            try
+            {
+                await _jsModule.DisposeAsync();
+            }
+            catch (JSDisconnectedException)
+            {
+                // Circuit already torn down; nothing further to clean up.
+            }
+        }
+    }
+
+    private void CancelRefinement()
+    {
+        _refinementCancellation?.Cancel();
+        _refinementCancellation?.Dispose();
+        _refinementCancellation = null;
+    }
+}

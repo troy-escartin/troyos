@@ -1,0 +1,19 @@
+@TroyOS_Api_HostAddress = https://localhost:7295
+
+### Empty prompt: 400
+POST {{TroyOS_Api_HostAddress}}/api/prompt/improve
+Content-Type: application/json
+
+{"prompt":"   "}
+
+### Valid prompt: 200 when Gemini:ApiKey is configured
+POST {{TroyOS_Api_HostAddress}}/api/prompt/improve
+Content-Type: application/json
+
+{"prompt":"You are a concise technical editor. Improve this release note."}
+
+### Unsupported content type: 415
+POST {{TroyOS_Api_HostAddress}}/api/prompt/improve
+Content-Type: text/plain
+
+not-json

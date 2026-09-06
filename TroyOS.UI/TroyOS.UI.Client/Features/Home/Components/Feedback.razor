@@ -1,0 +1,103 @@
+@* Feedback section: centered title + sliding carousel of testimonial cards. *@
+
+<section class="fb-section container-fluid px-4 px-lg-5" aria-labelledby="feedback-title">
+    <div id="feedbackCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000"
+         data-bs-wrap="true" aria-label="Stakeholder feedback">
+
+        <div class="carousel-indicators">
+            @for (var i = 0; i < slides.Count; i++)
+            {
+                var index = i;
+                <button type="button" data-bs-target="#feedbackCarousel" data-bs-slide-to="@index"
+                        class="@(index == 0 ? "active" : string.Empty)"
+                        aria-current="@(index == 0 ? "true" : "false")"
+                        aria-label="@($"Slide {index + 1}")"></button>
+            }
+        </div>
+
+        <div class="carousel-inner">
+            @for (var i = 0; i < slides.Count; i++)
+            {
+                var slide = slides[i];
+                <div class="carousel-item @(i == 0 ? "active" : string.Empty)">
+                    <p class="fb-subtitle">
+                        <i class="bi bi-quote fb-quote-open" aria-hidden="true"></i>
+                        <span>@slide.Subtitle</span>
+                        <i class="bi bi-quote fb-quote-close" aria-hidden="true"></i>
+                    </p>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+                        @foreach (var item in slide.Items)
+                        {
+                            <div class="col">
+                                <article class="fb-card h-100 p-4">
+                                    <div class="d-flex align-items-center gap-3 mb-3">
+                                        <div class="fb-avatar">
+                                            <i class="bi @item.Icon" aria-hidden="true"></i>
+                                        </div>
+                                        <span class="fb-role">@item.Role</span>
+                                    </div>
+                                    <p class="fb-quote">&ldquo;@item.Quote&rdquo;</p>
+                                    <div class="fb-stars" aria-label="Rated @item.Stars out of 5 stars">
+                                        @for (var s = 0; s < item.Stars; s++)
+                                        {
+                                            <i class="bi bi-star-fill" aria-hidden="true"></i>
+                                        }
+                                    </div>
+                                </article>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#feedbackCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#feedbackCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</section>
+
+<script>
+    // Respect prefers-reduced-motion: pause Bootstrap's built-in auto-slide instead of
+    // re-implementing carousel behavior.
+    (function () {
+        var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+        var el = document.getElementById('feedbackCarousel');
+        if (!mq.matches || !el || !window.bootstrap) {
+            return;
+        }
+        var instance = window.bootstrap.Carousel.getOrCreateInstance(el);
+        instance.pause();
+    })();
+</script>
+
+@code {
+    private sealed record FeedbackItem(string Icon, string Role, string Quote, int Stars);
+
+    private sealed record FeedbackSlide(string Subtitle, List<FeedbackItem> Items);
+
+    private readonly List<FeedbackSlide> slides =
+    [
+        new FeedbackSlide(
+            "What My Stakeholders Are Saying",
+            [
+                new FeedbackItem("bi-briefcase", "Business", "They consistently deliver solutions that drive real business impact. A trusted partner we can rely on.", 5),
+                new FeedbackItem("bi-building", "Director", "Their leadership and strategic thinking elevate every project they're involved in.", 5),
+                new FeedbackItem("bi-person", "Client", "Communication is top-notch and the results always exceed expectations. Highly recommended!", 5),
+                new FeedbackItem("bi-people", "Leader", "A forward-thinker who empowers teams and creates a culture of excellence.", 5)
+            ]),
+        new FeedbackSlide(
+            "My Real Stakeholders Are Saying\u2026",
+            [
+                new FeedbackItem("bi-heart", "Parents", "We still aren't 100% sure what he does for a living, but he types very fast and looks busy. Five stars, our son.", 5),
+                new FeedbackItem("bi-emoji-smile", "Wife", "Great architecture, questionable ability to hear me over the mechanical keyboard. Would marry again \u2014 with noise-cancelling.", 5),
+                new FeedbackItem("bi-controller", "Son", "Dad says he 'ships code.' I've never seen a single box arrive. But he does fix the Wi-Fi, so\u2026 legend.", 5),
+                new FeedbackItem("bi-stars", "Daughter", "Best snack negotiator and bedtime-story deployer. Only bug: says 'five more minutes' and it compiles into an hour.", 5)
+            ])
+    ];
+}

@@ -1,0 +1,100 @@
+.pb-preview {
+    position: sticky;
+    top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+    padding: 1.25rem;
+    background: #fff;
+    border: 1px solid rgba(123, 189, 232, .3);
+    border-radius: .6rem;
+    box-shadow: 0 8px 24px rgba(0, 29, 57, .08);
+}
+
+.pb-preview--complete {
+    border-color: rgba(78, 142, 162, .55);
+    box-shadow: 0 8px 24px rgba(0, 29, 57, .08), 0 0 0 1px rgba(78, 142, 162, .18);
+}
+
+.pb-preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+}
+
+.pb-preview-title {
+    margin: 0;
+    color: var(--navy);
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.pb-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    font-size: .78rem;
+}
+
+.pb-preview-code {
+    margin: 0;
+    padding: .9rem 1rem;
+    max-height: 16rem;
+    overflow: auto;
+    color: var(--navy);
+    background: rgba(189, 216, 233, .18);
+    border: 1px solid rgba(123, 189, 232, .3);
+    border-radius: .65rem;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: .78rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.pb-preview-result {
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+    padding-top: .5rem;
+    border-top: 1px dashed rgba(123, 189, 232, .4);
+}
+
+.pb-preview-result-title {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    margin: 0;
+    color: var(--navy);
+    font-size: .88rem;
+    font-weight: 800;
+}
+
+.pb-preview-result-hint {
+    margin: 0;
+    color: rgba(0, 29, 57, .6);
+    font-size: .74rem;
+}
+
+.pb-preview-result-code {
+    margin: 0;
+    padding: .9rem 1rem;
+    max-height: 14rem;
+    overflow: auto;
+    color: var(--navy);
+    background: rgba(78, 142, 162, .08);
+    border: 1px solid rgba(78, 142, 162, .3);
+    border-radius: .65rem;
+    font-size: .78rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+@media (max-width: 991.98px) {
+    .pb-preview {
+        position: static;
+        top: auto;
+    }
+}

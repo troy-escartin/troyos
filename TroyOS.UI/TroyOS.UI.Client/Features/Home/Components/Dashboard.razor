@@ -1,0 +1,49 @@
+<section id="dashboard" class="hero-section container-fluid px-4 px-lg-5" aria-labelledby="hero-title">
+    <div class="row align-items-center hero-content">
+        <div class="col-lg-6 hero-copy">
+            <h1 id="hero-title" class="hero-title headline-gradient">TROY<br />ESCARTIN</h1>
+            <div class="subtitle-row d-flex flex-wrap align-items-center gap-2 gap-md-3" aria-label="Roles">
+                <strong>Engineering Leader</strong><span aria-hidden="true">•</span>
+                <strong>AI Builder</strong><span aria-hidden="true">•</span>
+                <strong>Speaker</strong>
+            </div>
+            <p class="hero-description">Helping teams build better software through leadership, architecture, and AI. I turn ideas into impact.</p>
+            <div class="hero-actions d-flex flex-wrap gap-3">
+                <a class="btn btn-dark hero-button" href="/journey">View Journey <i class="bi bi-arrow-right ms-3"></i></a>
+                <a class="btn btn-outline-dark hero-button" href="#now">What I’m Doing Now <i class="bi bi-arrow-right ms-3"></i></a>
+            </div>
+            <div class="social-links d-flex gap-3 mt-4" aria-label="Social links">
+                <a class="social-button" href="https://www.linkedin.com" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                <a class="social-button" href="https://github.com" aria-label="GitHub"><i class="bi bi-github"></i></a>
+                <a class="social-button" href="mailto:hello@troyos.dev" aria-label="Email"><i class="bi bi-envelope"></i></a>
+                <a class="social-button" href="mailto:hello@troyos.dev?subject=Let's%20connect" aria-label="Schedule a conversation"><i class="bi bi-calendar3"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-6 hero-visual" aria-label="Portrait of Troy Escartin">
+            <div class="radial-rings" aria-hidden="true"></div>
+            <div class="dot-grid" aria-hidden="true"></div>
+            <img class="hero-photo" src="/images/troy.png" alt="Troy Escartin in a blue suit" />
+        </div>
+    </div>
+
+    <div class="row g-3 g-xl-4 capability-cards" id="journey">
+        @foreach (var card in capabilities)
+        {
+            <div class="col">
+                <article class="glass-card capability-card h-100">
+                    <div class="capability-icon"><i class="bi @card.Icon"></i></div>
+                    <div><h2>@card.Title</h2><ul>@foreach (var item in card.Items) { <li>@item</li> }</ul></div>
+                </article>
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    private readonly (string Icon, string Title, string[] Items)[] capabilities =
+    [
+        ("bi-code-slash", "Builder", [".NET", "Blazor", "Azure", "AI & Automation", "Cloud & Modern Web"]),
+        ("bi-people", "Leader", ["Agile Delivery", "Team Growth", "Coaching & Mentoring", "Strategy", "Innovation"]),
+        ("bi-mic", "Speaker", ["Toastmasters", "Communication", "Leadership", "Mentoring", "Public Speaking"])
+    ];
+}

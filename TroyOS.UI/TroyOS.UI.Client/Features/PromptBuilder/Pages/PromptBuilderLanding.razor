@@ -1,0 +1,115 @@
+@page "/prompt-builder"
+
+<PageTitle>AI Prompt Helper | Troy.OS</PageTitle>
+
+<main class="prompt-builder-landing">
+    <section class="pb-landing-hero container-fluid px-4 px-lg-5" aria-labelledby="pb-landing-title">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 pb-landing-copy">
+                <span class="pb-feature-label"><i class="bi bi-stars" aria-hidden="true"></i> AI PROMPT BUILDER</span>
+                <h1 id="pb-landing-title">Build Better Prompts.<br /><span class="pb-landing-title-accent">Get Better Results.</span></h1>
+                <p class="pb-landing-description">
+                    Describe what you want to achieve and I'll help you craft high-quality prompts using proven frameworks.
+                </p>
+                <div class="pb-landing-actions">
+                    <a class="btn btn-dark pb-primary-action" href="/prompt-builder/build">
+                        <i class="bi bi-stars" aria-hidden="true"></i> Start Building a Prompt <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    </a>
+                    <a class="btn pb-secondary-action" href="#how-it-works">
+                        <i class="bi bi-play-circle" aria-hidden="true"></i> See how it works
+                    </a>
+                </div>
+                <ul class="pb-feature-pills list-unstyled d-flex flex-wrap gap-2">
+                    @foreach (var pill in FeaturePills)
+                    {
+                        <li class="pb-feature-pill"><i class="bi @pill.Icon" aria-hidden="true"></i> @pill.Label</li>
+                    }
+                </ul>
+            </div>
+            <div class="col-lg-6 pb-hero-art-col">
+                <div class="pb-chat-card" aria-hidden="true">
+                    <div class="pb-chat-row pb-chat-row--user">
+                        <span class="pb-chat-avatar pb-chat-avatar--user"><i class="bi bi-person-fill"></i></span>
+                        <span class="pb-chat-bubble pb-chat-bubble--user">What do you want AI help with?</span>
+                    </div>
+                    <div class="pb-chat-row pb-chat-row--ai">
+                        <span class="pb-chat-avatar pb-chat-avatar--ai"><i class="bi bi-stars"></i></span>
+                        <span class="pb-chat-bubble pb-chat-bubble--ai">
+                            I'll help you build the perfect prompt.
+                            <span class="pb-chat-typing"><span></span><span></span><span></span></span>
+                        </span>
+                    </div>
+                    <span class="pb-chat-wand-badge"><i class="bi bi-magic"></i></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="pb-explore container-fluid px-4 px-lg-5" aria-label="RACE framework overview">
+        <article class="pb-explore-card pb-race-card">
+            <header class="pb-explore-card-header pb-explore-card-header--center">
+                <h2>The RACE Framework</h2>
+                <p class="pb-explore-card-subtitle">Follow 4 simple steps. I'll build your prompt as we go.</p>
+            </header>
+
+            <div class="pb-race-grid">
+                @for (var i = 0; i < RaceItems.Count; i++)
+                {
+                    var item = RaceItems[i];
+                    <div class="pb-race-item pb-race-item--@(i + 1)" style="--race-color:@item.Color;--race-glow:@(item.Color)40">
+                        <span class="pb-race-step-badge">STEP @(i + 1)</span>
+                        <div class="pb-race-item-header">
+                            <span class="pb-race-badge" style="background:@item.Color">@item.Letter</span>
+                            <div class="pb-race-item-title">
+                                <h3>@item.Title</h3>
+                                <a class="pb-learn-more" href="#">How it works</a>
+                            </div>
+                        </div>
+                        <p>@item.Description</p>
+                        <div class="pb-race-example">@item.Example</div>
+                    </div>
+                    if (i < RaceItems.Count - 1)
+                    {
+                        <span class="pb-race-arrow" aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+                    }
+                }
+            </div>
+        </article>
+    </section>
+
+    <section class="pb-privacy-bar container-fluid px-4 px-lg-5">
+        <div class="pb-privacy-inner d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-shield-check pb-privacy-icon" aria-hidden="true"></i>
+                <p class="mb-0">
+                    <strong>Your data is private and secure.</strong>
+                    <span class="pb-privacy-desc">We never store your inputs. Everything is processed securely and privately.</span>
+                </p>
+            </div>
+            <a class="btn pb-privacy-btn" href="#">
+                <i class="bi bi-lock-fill" aria-hidden="true"></i> Privacy First
+            </a>
+        </div>
+    </section>
+</main>
+
+@code {
+    private sealed record FeaturePill(string Icon, string Label);
+    private sealed record RaceItem(string Letter, string Color, string Title, string Description, string Example);
+
+    private static readonly IReadOnlyList<FeaturePill> FeaturePills =
+    [
+        new("bi-hexagon", "Framework-driven"),
+        new("bi-stars", "AI-powered"),
+        new("bi-clipboard-check", "Copy & use anywhere"),
+        new("bi-shield-lock", "Private & secure")
+    ];
+
+    private static readonly IReadOnlyList<RaceItem> RaceItems =
+    [
+        new("R", "#2f6fed", "Role", "Define the AI's role and expertise. This sets the foundation for high-quality output.", "Who should the AI act as?"),
+        new("A", "#0fb37d", "Action", "Clearly state what you want the AI to do. Be specific about the task or outcome.", "What do you want the AI to do?"),
+        new("C", "#7c3aed", "Context", "Add relevant background information, details, and constraints. The more context, the better the result.", "What context or details should the AI know?"),
+        new("E", "#f59e0b", "Expectation", "Specify the output format, tone, length, and any must-have requirements.", "How should the output look and feel?")
+    ];
+}
