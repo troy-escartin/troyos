@@ -11,6 +11,7 @@ using TroyOS.Api;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
+builder.Services.AddHealthChecks();
 
 builder.Services.Configure<GeminiOptions>(builder.Configuration.GetSection("Gemini"));
 builder.Services.Configure<PromptRefinementOptions>(builder.Configuration.GetSection("PromptRefinement"));
@@ -78,6 +79,8 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 builder.Services.AddSingleton(TimeProvider.System);
 
 var app = builder.Build();
+
+app.MapHealthChecks("/health");
 
 if (app.Environment.IsDevelopment())
 {
