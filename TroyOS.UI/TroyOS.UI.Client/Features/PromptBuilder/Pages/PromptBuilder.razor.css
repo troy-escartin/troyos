@@ -9,8 +9,12 @@
 .prompt-builder-page--result {
     height: auto;
     min-height: calc(100dvh - 4.25rem);
-    overflow: visible;
+    overflow: hidden;
     padding-bottom: 1rem;
+}
+
+.prompt-builder-page--result .radial-rings {
+    z-index: 0;
 }
 
 

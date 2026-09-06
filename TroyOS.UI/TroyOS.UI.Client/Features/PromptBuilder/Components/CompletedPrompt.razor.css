@@ -1,4 +1,6 @@
 .pb-result {
+    position: relative;
+    z-index: 1;
     max-width: 72rem;
     padding-top: 1.25rem;
     padding-bottom: 3rem;
