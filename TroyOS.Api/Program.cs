@@ -62,6 +62,12 @@ builder.Services.AddHttpClient<IGeminiPromptRefinementService, GeminiPromptRefin
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    if (string.Equals(builder.Configuration["RENDER"], "true", StringComparison.OrdinalIgnoreCase))
+    {
+        options.KnownNetworks.Clear();
+        options.KnownProxies.Clear();
+    }
+
     var trustedProxyIps = builder.Configuration.GetSection("ForwardedHeaders:TrustedProxyIps").Get<string[]>() ?? [];
     foreach (var address in trustedProxyIps)
     {

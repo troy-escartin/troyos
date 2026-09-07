@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: troyos-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: RENDER
+        value: "true"
+      - key: ASPNETCORE_HTTP_PORTS
+        value: "10000"
+      - key: Gemini__ApiKey
+        sync: false
+      - key: Cors__AllowedOrigins__0
+        sync: false
