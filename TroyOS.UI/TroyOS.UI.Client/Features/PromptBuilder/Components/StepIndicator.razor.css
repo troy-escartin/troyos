@@ -7,6 +7,18 @@
     list-style: none;
 }
 
+@media (max-width: 575.98px) {
+    .pb-steps {
+        flex: 0 0 auto;
+        gap: .3rem;
+    }
+
+    .pb-step-dot {
+        width: 1.75rem;
+        height: 1.75rem;
+    }
+}
+
 .pb-step-dot {
     display: inline-grid;
     place-items: center;

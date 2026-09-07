@@ -144,7 +144,7 @@
 
 @media (max-width: 991.98px) {
     .pb-chat-col {
-        padding-bottom: 12.5rem;
+        padding-bottom: 3rem;
     }
 
     .prompt-builder-page {
@@ -163,7 +163,7 @@
         bottom: 0;
         top: auto;
         z-index: 20;
-        max-height: 11.5rem;
+        max-height: 6rem;
         overflow: hidden;
         background: var(--base);
         border-top-left-radius: 1rem;
@@ -171,6 +171,19 @@
         box-shadow: 0 -8px 24px rgba(0, 29, 57, .16);
         transition: max-height .3s ease;
     }
+
+@media (max-width: 575.98px) {
+    .pb-page-header {
+        flex-wrap: nowrap !important;
+        gap: .5rem !important;
+    }
+
+    .pb-page-title {
+        flex: 1 1 auto;
+        min-width: 0;
+        font-size: 1.25rem;
+    }
+}
 
     .pb-preview-col::after {
         content: "";
